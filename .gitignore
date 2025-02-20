@@ -1,0 +1,6 @@
+/target
+*.db
+*.txt
+*.png
+*.log
+/glyphtool
