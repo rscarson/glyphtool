@@ -41,6 +41,7 @@ impl ToBitmap for GlyphBlockRenderer {
     fn to_bitmap(&self) -> Bitmap {
         #[rustfmt::skip]
         let spacer = vec![
+            px!(e self.margin),px!(f self.width - 2 * self.margin), px!(e self.margin), px!(nl),
             px!(e self.margin),px!(f self.width - 2 * self.margin), px!(e self.margin),
         ];
 

@@ -1,0 +1,8 @@
+obj/*.o
+obj/*.d
+obj/ucd/*.o
+obj/ucd/*.d
+lib/*.a
+lib/*.lib
+example/example.exe
+example/example

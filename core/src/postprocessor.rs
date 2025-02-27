@@ -1,5 +1,5 @@
 //! Postprocessor module for image processing
-use image::{GrayImage, RgbImage};
+use image::{codecs::png::PngEncoder, GrayImage, ImageEncoder, RgbImage};
 use rayon::iter::ParallelIterator;
 use std::path::Path;
 
@@ -33,6 +33,37 @@ impl OutputImage {
             Ok(Self::Rgb(image))
         } else {
             Ok(Self::Grayscale(img.to_luma8()))
+        }
+    }
+
+    /// Convert the image to a byte vector (RGB)
+    #[must_use]
+    pub fn into_bytes(mut self) -> Vec<u8> {
+        self.convert_to_rgb();
+        match self {
+            Self::Grayscale(_) => unreachable!(),
+            Self::Rgb(img) => img.into_raw(),
+        }
+    }
+
+    /// Convert the image to a png byte vector
+    ///
+    /// # Errors
+    /// Will return an error if the image cannot be encoded
+    pub fn into_png(mut self) -> Result<Vec<u8>, image::ImageError> {
+        self.convert_to_rgb();
+        match self {
+            Self::Grayscale(_) => unreachable!(),
+            Self::Rgb(img) => {
+                let mut buf = Vec::new();
+                PngEncoder::new(&mut buf).write_image(
+                    img.as_ref(),
+                    img.width(),
+                    img.height(),
+                    image::ExtendedColorType::Rgb8,
+                )?;
+                Ok(buf)
+            }
         }
     }
 

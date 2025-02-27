@@ -8,7 +8,7 @@ espeak = {path = "../espeak"}
 logos = "0.15.0"
 rusqlite = {version = "0.32.1", features = ["bundled", "blob", "serialize"]}
 thiserror = "2.0.11"
-image = "0.25.5"
+image = { version = "0.25.5", features = ["png"] }
 rand = "0.9.0"
 noise = "0.9.0"
 rayon = "1.10.0"

@@ -1,9 +1,28 @@
 use std::env;
 use std::path::PathBuf;
+use std::process::Command;
 
 fn main() {
-    println!("cargo:rustc-link-search=lib");
-    println!("cargo:rustc-link-lib=speak");
+    build_espeak();
+    bind_espeak();
+}
+
+fn build_espeak() {
+    let status = Command::new("make")
+        .arg("all")
+        .current_dir("c_src")
+        .status()
+        .expect("Failed to build espeak");
+
+    if !status.success() {
+        panic!("Makefile build for espeak failed");
+    }
+}
+
+fn bind_espeak() {
+    println!("cargo:rustc-link-search=c_src/lib");
+    println!("cargo:rustc-link-search=espeak/c_src/lib");
+    println!("cargo:rustc-link-lib=espeak_mini");
 
     let bindings = bindgen::Builder::default()
         .header("speak_lib.h")

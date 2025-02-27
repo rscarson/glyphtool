@@ -1,4 +1,5 @@
 use crate::{glyphs::AsGlyphs, lexer::collections::WordKind};
+use std::io::Write;
 
 /// Trait for converting english strings to IPA and phonemes
 pub trait PhonemeExt {
@@ -79,6 +80,16 @@ impl PhonemeExt for &str {
 
             if !found {
                 eprintln!("No replacement found for phoneme: {char}");
+
+                // Append the character to a new line in bad_phonemes.txt
+                if let Ok(mut file) = std::fs::OpenOptions::new()
+                    .append(true)
+                    .create(true)
+                    .open("bad_phonemes.txt")
+                {
+                    writeln!(file, "{char}").ok();
+                }
+
                 output.push('?');
             }
         }
@@ -122,5 +133,5 @@ const PHONEME_REPLACEMENT_TABLE: &[(&[char], &str)] = &[
     //
     // Combinatory sounds
     (&['ɚ', 'ɜ'], "uhr"),
-    (&['ʔ'], ""),
+    (&['ʔ', 'ʲ'], ""),
 ];
