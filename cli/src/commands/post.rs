@@ -1,8 +1,5 @@
 use clap::Subcommand;
-use libglyphtool::{
-    error::EtroisResult,
-    postprocessor::{ImageExt, OutputImage},
-};
+use libglyphtool::{error::EtroisResult, postprocessor::OutputImage};
 
 #[derive(Debug, clap::Parser)]
 pub struct Image {

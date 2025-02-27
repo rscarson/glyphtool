@@ -2,8 +2,8 @@ use super::StdinSource;
 use libglyphtool::{
     error::EtroisResult,
     lexer,
-    postprocessor::ImageExt,
-    renderer::{GlyphBlockRenderer, Renderer},
+    postprocessor::OutputImage,
+    renderer::{bitmap::ToBitmap, GlyphBlockRenderer},
 };
 use std::borrow::Cow;
 
@@ -59,13 +59,13 @@ impl Render {
         let renderer = GlyphBlockRenderer::new(&block, self.margin);
 
         println!("Rendering image...");
-        let mut bitmap = renderer.render_bitmap(0, 0);
-
-        println!("Scaling image by {}...", self.scale);
-        bitmap.scale(self.scale);
+        let bitmap = renderer.to_bitmap();
 
         println!("Postprocessing image...");
-        let mut image = bitmap.to_grayscale();
+        let mut image = OutputImage::new_grayscale(&bitmap);
+
+        println!("Scaling image by {}...", self.scale);
+        image.scale(self.scale);
 
         if let Some(filter) = &self.filter {
             println!("Applying {} filter...", filter);

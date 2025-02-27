@@ -1,5 +1,8 @@
-use super::{shrtstop::join_vertical, GlyphRowRenderer, Renderer};
-use crate::{lexer::collections::Text, renderer::shrtstop::ShrtstopGlyph};
+use super::{
+    bitmap::{Bitmap, ToBitmap},
+    GlyphRowRenderer,
+};
+use crate::lexer::collections::Text;
 
 /// Renders an entire block of text, as a series of rows
 pub struct GlyphBlockRenderer {
@@ -16,7 +19,7 @@ impl GlyphBlockRenderer {
         let mut width = 0;
         let mut height = 0;
         for row in &rows {
-            let (w, h) = row.min_size();
+            let (w, h) = row.size();
             width = width.max(w);
             height += h;
         }
@@ -34,34 +37,27 @@ impl GlyphBlockRenderer {
         }
     }
 }
-impl Renderer for GlyphBlockRenderer {
-    fn height_fungible(&self) -> bool {
-        false
-    }
-
-    fn min_size(&self) -> (u32, u32) {
-        (self.width, self.height)
-    }
-
-    fn render(&self, _: u32, _: u32) -> Vec<u32> {
-        let (width, _) = self.min_size();
+impl ToBitmap for GlyphBlockRenderer {
+    fn to_bitmap(&self) -> Bitmap {
+        #[rustfmt::skip]
         let spacer = vec![
-            px!(e self.margin),
-            px!(f width - 2 * self.margin),
-            px!(e self.margin),
-            px!(nl),
+            px!(e self.margin),px!(f self.width - 2 * self.margin), px!(e self.margin),
         ];
 
-        let mut pieces = vec![];
-        let rows: Vec<_> = self.rows.iter().map(|r| r.render(0, 0)).collect();
-        for (i, row) in rows.iter().enumerate() {
+        let mut bitmap = Bitmap::new(self.width as usize, self.height as usize);
+        let mut y = self.margin;
+        for (i, row) in self.rows.iter().enumerate() {
             if i != 0 {
-                pieces.push(&spacer);
+                bitmap.paste(&spacer.to_bitmap(), 0, y as usize);
+                y += 3;
             }
 
-            pieces.push(row);
+            let (_, height) = row.size();
+            let row_bitmap = row.to_bitmap();
+            bitmap.paste(&row_bitmap, self.margin as usize, y as usize);
+            y += height + 1;
         }
 
-        join_vertical(&pieces, 1)
+        bitmap
     }
 }

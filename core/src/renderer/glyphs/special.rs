@@ -103,23 +103,23 @@ glyph!(
             //
             // On top we have the dots indicating a modifier sound
             px!(e 1), px!(f 1), px!(e 1), px!(f 1), px!(nl),
-            px!(nl),
+            px!(e 4), px!(nl),
             //
             // Next a line
             px!(e 1), px!(f w - 1), px!(nl),
             //
             // Continuing the vertical line to the first crossbar
-            px!(e 1), px!(f 1), px!(nl),
-            px!(f 3), px!(nl),
+            px!(e 1), px!(f 1), px!(e 2), px!(nl),
+            px!(f 3), px!(e 1), px!(nl),
             //
             // The 2nd crossbar
-            px!(e 1), px!(f 1), px!(nl),
-            px!(e 1), px!(f 2),
+            px!(e 1), px!(f 1), px!(e 2),px!(nl),
+            px!(e 1), px!(f 2), px!(e 1),
         ];
 
         // Now vertical line until we reach h
         for _ in 0..(h - 7) {
-            pixels.extend([px!(nl), px!(e 1), px!(f 1)]);
+            pixels.extend([px!(nl), px!(e 1), px!(f 1), px!(e 2)]);
         }
 
         pixels
@@ -135,35 +135,35 @@ glyph!(
         let mut pixels = vec![
             //
             // On top we have the vertical bar, then the first dot
-            px!(e 3), px!(f 1), px!(nl),
-            px!(e 1), px!(f 1), px!(e 1), px!(f 1), px!(nl),
+            px!(e 3), px!(f 1), px!(e 2),px!(nl),
+            px!(e 1), px!(f 1), px!(e 1), px!(f 1), px!(e 2), px!(nl),
         ];
 
         // At min size, there is one line segment here - add another for each additional height
         for _ in 0..(h - 9) {
-            pixels.extend([px!(e 3), px!(f 1), px!(nl)]);
+            pixels.extend([px!(e 3), px!(f 1), px!(e 2), px!(nl)]);
         }
 
         // The next dot
-        pixels.extend([px!(e 1), px!(f 1), px!(e 1), px!(f 1), px!(nl)]);
+        pixels.extend([px!(e 1), px!(f 1), px!(e 1), px!(f 1), px!(e 2), px!(nl)]);
 
         // The next line segment
-        pixels.extend([px!(e 3), px!(f 1), px!(nl)]);
+        pixels.extend([px!(e 3), px!(f 1), px!(e 2), px!(nl)]);
 
         // The first crossbar
-        pixels.extend([px!(e 2), px!(f 2), px!(nl)]);
+        pixels.extend([px!(e 2), px!(f 2), px!(e 2), px!(nl)]);
 
         // The next line segment
-        pixels.extend([px!(e 3), px!(f 1), px!(nl)]);
+        pixels.extend([px!(e 3), px!(f 1), px!(e 2), px!(nl)]);
 
         // The last crossbar
         pixels.extend([px!(e 1), px!(f 5), px!(nl)]);
 
         // The next line segment
-        pixels.extend([px!(e 3), px!(f 1), px!(nl)]);
+        pixels.extend([px!(e 3), px!(f 1), px!(e 2), px!(nl)]);
 
         // And the closer
-        pixels.push(px!(f 4));
+        pixels.extend([px!(f 4), px!(e 2)]);
         pixels
     }
 );
@@ -174,7 +174,7 @@ glyph!(
     min_size = (5, 8),
     height_fungible = true,
     |w, h| {
-        let mut pixels = vec![px!(f 1), px!(e 1), px!(f 2), px!(nl)];
+        let mut pixels = vec![px!(f 1), px!(e 1), px!(f 2), px!(e 1), px!(nl)];
 
         // The top and bottom have fungible segments, lets divide the extra height between them
         let extra_top = (h - 8) / 2;
@@ -192,8 +192,8 @@ glyph!(
 
         // Center
         pixels.extend([
-            px!(e 1), px!(f 2), px!(nl),
-            px!(e 2), px!(f 2), px!(nl),
+            px!(e 1), px!(f 2), px!(e 2), px!(nl),
+            px!(e 2), px!(f 2), px!(e 1), px!(nl),
         ]);
 
         // Contains the end of the BL line and the MR line
@@ -203,11 +203,11 @@ glyph!(
 
         // The bottom fungible
         for _ in 0..=extra_bottom {
-            pixels.extend([px!(f 1), px!(e 1), px!(f 1), px!(nl)]);
+            pixels.extend([px!(f 1), px!(e 1), px!(f 1), px!(e 2), px!(nl)]);
         }
 
         // And the bottom horn
-        pixels.extend([px!(e 1), px!(f 2), px!(e 1), px!(f 1), px!(nl)]);
+        pixels.extend([px!(e 1), px!(f 2), px!(e 1), px!(f 1)]);
 
         pixels
     }

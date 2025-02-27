@@ -1,114 +1,12 @@
 //! Postprocessor module for image processing
 use image::{GrayImage, RgbImage};
-use rayon::{
-    iter::{IndexedParallelIterator, IntoParallelRefMutIterator, ParallelIterator},
-    slice::ParallelSliceMut,
-};
+use rayon::iter::ParallelIterator;
 use std::path::Path;
+
+use crate::renderer::bitmap::Bitmap;
 
 mod filters;
 mod utilities;
-
-/// Trait for converting a raw bitmap array to a usable image format
-pub trait ImageExt {
-    /// Create a grayscale image from the bitmap
-    fn to_grayscale(&self) -> OutputImage;
-
-    /// Scale the image by a factor
-    fn scale(&mut self, factor: usize);
-}
-impl ImageExt for Vec<Vec<u8>> {
-    fn to_grayscale(&self) -> OutputImage {
-        OutputImage::new_grayscale(self)
-    }
-
-    fn scale(&mut self, factor: usize) {
-        if factor <= 1 {
-            return;
-        }
-
-        for row in self.iter() {
-            for px in row {
-                let c = if *px < 128 { "█" } else { " " };
-                print!("{c}");
-            }
-
-            println!();
-        }
-
-        let width = self.first().map_or(0, Vec::len);
-        let height = self.len();
-        let mut new_image = vec![vec![0; width * factor]; height * factor];
-
-        new_image
-            .par_iter_mut()
-            .enumerate()
-            .for_each(|(new_y, row)| {
-                let old_y = new_y / factor;
-                if old_y < height {
-                    for (new_x, item) in row.iter_mut().enumerate().take(width * factor) {
-                        let old_x = new_x / factor;
-                        *item = self[old_y][old_x];
-                    }
-                }
-            });
-
-        *self = new_image;
-    }
-}
-impl ImageExt for OutputImage {
-    fn to_grayscale(&self) -> OutputImage {
-        match self {
-            Self::Grayscale(_) => self.clone(),
-            Self::Rgb(img) => {
-                let mut new_img = image::GrayImage::new(img.width(), img.height());
-                new_img.par_chunks_mut(3).for_each(|px| {
-                    let r = f32::from(px[0]);
-                    let g = f32::from(px[1]);
-                    let b = f32::from(px[2]);
-
-                    let gray = (r + g + b) / 3.0;
-                    px[0] = gray as u8;
-                    px[1] = gray as u8;
-                    px[2] = gray as u8;
-                });
-
-                OutputImage::Grayscale(new_img)
-            }
-        }
-    }
-
-    fn scale(&mut self, factor: usize) {
-        match self {
-            Self::Grayscale(bitmap) => {
-                let (width, height) = (bitmap.width() as usize, bitmap.height() as usize);
-                let mut new_image =
-                    GrayImage::new((width * factor) as u32, (height * factor) as u32);
-
-                new_image
-                    .par_enumerate_pixels_mut()
-                    .for_each(|(x, y, pixel)| {
-                        let old_x = x / factor as u32;
-                        let old_y = y / factor as u32;
-                        *pixel = *bitmap.get_pixel(old_x, old_y);
-                    });
-            }
-            Self::Rgb(bitmap) => {
-                let (width, height) = (bitmap.width() as usize, bitmap.height() as usize);
-                let mut new_image =
-                    RgbImage::new((width * factor) as u32, (height * factor) as u32);
-
-                new_image
-                    .par_enumerate_pixels_mut()
-                    .for_each(|(x, y, pixel)| {
-                        let old_x = x / factor as u32;
-                        let old_y = y / factor as u32;
-                        *pixel = *bitmap.get_pixel(old_x, old_y);
-                    });
-            }
-        }
-    }
-}
 
 /// Output image type
 #[derive(Clone)]
@@ -140,9 +38,9 @@ impl OutputImage {
 
     /// Create a new grayscale image from a bitmap
     #[must_use]
-    pub fn new_grayscale(bitmap: &[Vec<u8>]) -> Self {
-        let height = bitmap.len();
-        let width = bitmap.first().map_or(0, Vec::len);
+    pub fn new_grayscale(bitmap: &Bitmap) -> Self {
+        let (width, height) = bitmap.size();
+        let bitmap = bitmap.inner();
 
         let mut img = image::GrayImage::new(width as u32, height as u32);
         img.par_enumerate_pixels_mut().for_each(|(x, y, pixel)| {
@@ -175,6 +73,42 @@ impl OutputImage {
                 *self = Self::Rgb(new_img);
             }
             Self::Rgb(_) => {}
+        }
+    }
+
+    /// Scale the image by a factor
+    pub fn scale(&mut self, factor: usize) {
+        match self {
+            Self::Grayscale(bitmap) => {
+                let (width, height) = (bitmap.width() as usize, bitmap.height() as usize);
+                let mut new_image =
+                    GrayImage::new((width * factor) as u32, (height * factor) as u32);
+
+                new_image
+                    .par_enumerate_pixels_mut()
+                    .for_each(|(x, y, pixel)| {
+                        let old_x = x / factor as u32;
+                        let old_y = y / factor as u32;
+                        *pixel = *bitmap.get_pixel(old_x, old_y);
+                    });
+
+                *self = Self::Grayscale(new_image);
+            }
+            Self::Rgb(bitmap) => {
+                let (width, height) = (bitmap.width() as usize, bitmap.height() as usize);
+                let mut new_image =
+                    RgbImage::new((width * factor) as u32, (height * factor) as u32);
+
+                new_image
+                    .par_enumerate_pixels_mut()
+                    .for_each(|(x, y, pixel)| {
+                        let old_x = x / factor as u32;
+                        let old_y = y / factor as u32;
+                        *pixel = *bitmap.get_pixel(old_x, old_y);
+                    });
+
+                *self = Self::Rgb(new_image);
+            }
         }
     }
 

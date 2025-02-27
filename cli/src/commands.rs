@@ -6,10 +6,9 @@ use libglyphtool::{
         self,
         phonambulator::{AlwaysAutoSource, PhonambulationSource},
     },
-    px,
     renderer::{
-        shrtstop::{join_horizontal, join_vertical, ShrtstopGlyph},
-        GlyphBlockRenderer, Renderer,
+        bitmap::{Bitmap, ToBitmap},
+        GlyphBlockRenderer,
     },
 };
 
@@ -50,21 +49,13 @@ enum Commands {
     DebugGlyphs {
         /// Only render the glyphs that are not square
         #[arg(long)]
-        only_unsquare: bool,
+        only_invalid: bool,
     },
 
     /// Debug the renderer by rendering as ascii
     DebugRenderer {
         /// The phoneme to render
         phoneme: String,
-
-        /// The width of the rendered glyph
-        #[arg(long, default_value = "0")]
-        width: u32,
-
-        /// The height of the rendered glyph
-        #[arg(long, default_value = "0")]
-        height: u32,
     },
 }
 impl Commands {
@@ -75,37 +66,28 @@ impl Commands {
             Self::Render(command) => command.exec()?,
             Self::Image(command) => command.exec()?,
 
-            Self::DebugGlyphs { only_unsquare } => {
+            Self::DebugGlyphs { only_invalid } => {
                 for glyph in ENCODING_TABLE {
-                    let mut code = glyph.render(0, 0);
-                    if *only_unsquare && code.is_square() {
+                    let bitmap = glyph.to_shrtstop(0, 0).to_bitmap();
+                    if *only_invalid && bitmap.is_valid() {
                         continue;
                     }
 
-                    let width = code.width();
-                    code = join_vertical(&[vec![px!(e width)], code, vec![px!(e width)]], 0);
+                    let (width, height) = bitmap.size();
+                    let mut canvas = Bitmap::new(width + 2, height + 2);
+                    canvas.paste(&bitmap, 1, 1);
+                    canvas.invert();
 
-                    let height = code.height();
-                    let mut vpad: Vec<_> = vec![[px!(e 1), px!(nl)]; height as usize - 1]
-                        .into_iter()
-                        .flatten()
-                        .collect();
-                    vpad.push(px!(e 1));
-                    code = join_horizontal(&[&vpad, &code, &vpad], 0);
-
-                    println!("\n{}\n{}", glyph.pronounciation(), code.as_ascii(true));
+                    let pronounciation = glyph.pronounciation();
+                    println!("=====\n{pronounciation}\n{canvas}");
                 }
             }
 
-            Self::DebugRenderer {
-                phoneme,
-                width,
-                height,
-            } => {
+            Self::DebugRenderer { phoneme } => {
                 let text = lexer::parse(phoneme, None, AlwaysAutoSource)?;
                 println!("{text}");
                 let block = GlyphBlockRenderer::new(&text, 0);
-                let rendered = block.render_ascii(*width, *height, false);
+                let rendered = block.to_bitmap();
                 println!("{rendered}");
             }
         }

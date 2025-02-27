@@ -1,4 +1,7 @@
-use super::Renderer;
+use super::{
+    bitmap::{Bitmap, ToBitmap},
+    Renderer,
+};
 use crate::glyphs::{special::Spacer, Glyph};
 
 /// A vertical stack of glyphs, with 1px spacing between each
@@ -8,6 +11,7 @@ pub struct GlyphStackRenderer {
     glyphs: Vec<Box<dyn Glyph>>,
     width: u32,
     min_height: u32,
+    height: Option<u32>,
 }
 impl GlyphStackRenderer {
     /// Create a new stack renderer
@@ -39,20 +43,30 @@ impl GlyphStackRenderer {
             glyphs,
             width,
             min_height,
+            height: None,
         }
     }
-}
-impl Renderer for GlyphStackRenderer {
-    fn height_fungible(&self) -> bool {
-        true
+
+    /// Set the actual height of the stack
+    pub fn set_height(&mut self, h: u32) {
+        self.height = Some(h);
     }
 
-    fn min_size(&self) -> (u32, u32) {
+    /// Get the actual height of the stack
+    #[must_use]
+    pub fn height(&self) -> u32 {
+        self.height.unwrap_or(self.min_height)
+    }
+
+    /// Get the minimum size of the stack
+    #[must_use]
+    pub fn min_size(&self) -> (u32, u32) {
         (self.width, self.min_height)
     }
-
-    fn render(&self, w: u32, h: u32) -> Vec<u32> {
-        let (w, h) = self.size(w, h);
+}
+impl ToBitmap for GlyphStackRenderer {
+    fn to_bitmap(&self) -> Bitmap {
+        let h = self.height();
 
         // Calculate the height of each glyph
         // We increase by 1 for each fungible glyph till we reach the desired height
@@ -73,15 +87,15 @@ impl Renderer for GlyphStackRenderer {
             }
         }
 
-        let mut pixels = vec![];
-        for (i, glyph) in self.glyphs.iter().rev().enumerate() {
-            let rendered = glyph.render(w, height_table[i]);
-            pixels.extend(rendered);
-            if i != self.glyphs.len() - 1 {
-                pixels.extend([px!(nl), px!(nl)]);
-            }
+        let mut bitmap = Bitmap::new(self.width as usize, h as usize);
+        let mut y = 0;
+        for (glyph, &height) in self.glyphs.iter().rev().zip(&height_table) {
+            let glyph = glyph.to_shrtstop(self.width, height);
+            let glyph = glyph.to_bitmap();
+            bitmap.paste(&glyph, 0, y as usize);
+            y += height + 1;
         }
 
-        pixels
+        bitmap
     }
 }

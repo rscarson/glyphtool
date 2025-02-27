@@ -1,4 +1,7 @@
-use super::{shrtstop::join_horizontal, GlyphStackRenderer, Renderer};
+use super::{
+    bitmap::{Bitmap, ToBitmap},
+    GlyphStackRenderer,
+};
 use crate::{
     glyphs::{special, AsGlyphs, Glyph},
     lexer::collections::Line,
@@ -39,6 +42,10 @@ impl GlyphRowRenderer {
             height = height.max(h);
         }
 
+        for stack in &mut stacks {
+            stack.set_height(height);
+        }
+
         width += stacks.len() as u32 - 1;
         Self {
             stacks,
@@ -46,20 +53,22 @@ impl GlyphRowRenderer {
             height,
         }
     }
-}
-impl Renderer for GlyphRowRenderer {
-    fn height_fungible(&self) -> bool {
-        false
-    }
 
-    fn min_size(&self) -> (u32, u32) {
+    /// Get the size of the row
+    #[must_use]
+    pub fn size(&self) -> (u32, u32) {
         (self.width, self.height)
     }
+}
+impl ToBitmap for GlyphRowRenderer {
+    fn to_bitmap(&self) -> Bitmap {
+        let mut bitmap = Bitmap::new(self.width as usize, self.height as usize);
+        let mut x = 0;
+        for stack in self.stacks.iter().map(GlyphStackRenderer::to_bitmap) {
+            bitmap.paste(&stack, x, 0);
+            x += stack.size().0 + 1;
+        }
 
-    fn render(&self, _: u32, h: u32) -> Vec<u32> {
-        let (_, h) = self.size(0, h);
-
-        let stacks: Vec<_> = self.stacks.iter().map(|s| s.render(0, h)).collect();
-        join_horizontal(&stacks, 1)
+        bitmap
     }
 }

@@ -1,4 +1,7 @@
-use crate::{glyphs::numeric::*, renderer::Renderer};
+use crate::{
+    glyphs::numeric::*,
+    renderer::{shrtstop::ToShrtstop, Renderer},
+};
 
 impl Renderer for Number {
     fn min_size(&self) -> (u32, u32) {
@@ -28,8 +31,9 @@ impl Renderer for Number {
     fn height_fungible(&self) -> bool {
         true
     }
-
-    fn render(&self, w: u32, h: u32) -> Vec<u32> {
+}
+impl ToShrtstop for Number {
+    fn to_shrtstop(&self, w: u32, h: u32) -> Vec<u32> {
         let (w, h) = self.size(w, h);
 
         let mut pixels = vec![];
@@ -95,7 +99,7 @@ impl Renderer for Number {
 
         // If rows + 4 < h, add empty rows
         let consumed = n_rows + 4;
-        for _ in 0..(h - consumed) {
+        for _ in 0..=(h - consumed) {
             pixels.push(px!(f 1));
             pixels.push(px!(e w - 2));
             pixels.push(px!(f 1));
@@ -104,7 +108,6 @@ impl Renderer for Number {
 
         // Last row is a line of w pixels
         pixels.push(px!(f w));
-        pixels.push(px!(nl));
 
         pixels
     }

@@ -60,6 +60,8 @@ macro_rules! px {
 }
 pub use px;
 
+use super::bitmap::{Bitmap, ToBitmap};
+
 #[inline]
 fn shrtstop_is_linebreak(v: u32) -> bool {
     v == LINEBREAK
@@ -144,29 +146,6 @@ pub trait ShrtstopPixel {
     }
 }
 
-/// Functionality for manipulating glyphs in the SHRTSTOP format
-pub trait ShrtstopGlyph {
-    /// Returns true if the glyph is properly squared  
-    /// It is an error for this to return false
-    ///
-    /// Warning! This function is intended ONLY for debugging purposes
-    /// and is highly inefficient. Do not use in production code.
-    fn is_square(&self) -> bool;
-
-    /// Returns the width of the glyph
-    fn width(&self) -> u32;
-
-    /// Returns the height of the glyph
-    /// This is the number of rows in the glyph
-    fn height(&self) -> u32;
-
-    /// Returns the glyph as an ASCII string
-    fn as_ascii(&self, invert: bool) -> String;
-
-    /// Returns the glyph as a grid of grayscale values
-    fn as_grayscale(&self) -> Vec<Vec<u8>>;
-}
-
 impl ShrtstopPixel for u32 {
     #[inline]
     fn is_linebreak(&self) -> bool {
@@ -189,128 +168,17 @@ impl ShrtstopPixel for u32 {
     }
 }
 
-impl ShrtstopGlyph for [u32] {
-    fn height(&self) -> u32 {
-        self.iter().filter(|v| v.is_linebreak()).count() as u32 + 1
-    }
-
-    fn width(&self) -> u32 {
-        let mut width = 0;
-        for v in self {
-            if v.is_linebreak() {
-                break;
-            }
-            width += v.width();
-        }
-
-        width
-    }
-
-    fn is_square(&self) -> bool {
-        let ref_width = self.width();
-        let mut width = 0;
-        for v in self {
-            if v.is_linebreak() {
-                if width != ref_width {
-                    return false;
-                }
-                width = 0;
-            } else {
-                width += v.width();
-            }
-        }
-
-        true
-    }
-
-    fn as_ascii(&self, invert: bool) -> String {
-        self.iter().map(|g| g.as_ascii(invert)).collect()
-    }
-
-    fn as_grayscale(&self) -> Vec<Vec<u8>> {
+/// Functionality for converting a type to a SHRTSTOP glyph
+pub trait ToShrtstop {
+    /// Converts the implementing type to a SHRTSTOP glyph
+    fn to_shrtstop(&self, width: u32, heigh: u32) -> Vec<u32>;
+}
+impl ToBitmap for Vec<u32> {
+    fn to_bitmap(&self) -> Bitmap {
         let rows = self.split(ShrtstopPixel::is_linebreak);
         rows.map(|row| row.iter().flat_map(ShrtstopPixel::as_grayscale).collect())
             .collect()
     }
-}
-impl ShrtstopGlyph for Vec<u32> {
-    fn height(&self) -> u32 {
-        self.as_slice().height()
-    }
-
-    fn width(&self) -> u32 {
-        self.as_slice().width()
-    }
-
-    fn is_square(&self) -> bool {
-        self.as_slice().is_square()
-    }
-
-    fn as_ascii(&self, invert: bool) -> String {
-        self.as_slice().as_ascii(invert)
-    }
-
-    fn as_grayscale(&self) -> Vec<Vec<u8>> {
-        self.as_slice().as_grayscale()
-    }
-}
-
-/// Joins a series of glyphs vertically
-pub fn join_vertical(pieces: &[impl AsRef<Vec<u32>>], spacing: u32) -> Vec<u32> {
-    let new_width = pieces.iter().map(|p| p.as_ref().width()).max().unwrap_or(0);
-    let mut result =
-        Vec::with_capacity(pieces.iter().map(|p| p.as_ref().len()).sum::<usize>() + pieces.len());
-
-    for piece in pieces {
-        let piece = piece.as_ref();
-        let padding = new_width - piece.width();
-        for row in piece.split(ShrtstopPixel::is_linebreak) {
-            result.extend(row.iter().copied());
-            if padding > 0 {
-                result.push(px!(e padding));
-            }
-            result.push(px!(nl));
-        }
-        for _ in 0..spacing {
-            result.extend([px!(e new_width), px!(nl)]);
-        }
-    }
-
-    result.pop(); // Remove the last line break
-    result
-}
-
-/// Joins a series of glyphs horizontally
-pub fn join_horizontal(pieces: &[impl AsRef<Vec<u32>>], spacing: u32) -> Vec<u32> {
-    let mut rows: Vec<Vec<u32>> = vec![vec![]];
-    for glyph in pieces {
-        let stack_rows = glyph
-            .as_ref()
-            .split(ShrtstopPixel::is_linebreak)
-            .collect::<Vec<_>>();
-
-        let len = stack_rows.len();
-        if rows.len() < len {
-            let w = rows.first().map(ShrtstopGlyph::width).unwrap_or_default();
-            rows.resize(len, if w > 0 { vec![px!(e w)] } else { vec![] });
-        }
-
-        for (i, row) in stack_rows.into_iter().enumerate() {
-            rows[i].extend(row);
-
-            if spacing > 0 {
-                rows[i].push(px!(e spacing));
-            }
-        }
-    }
-
-    let mut pixels = vec![];
-    for row in rows {
-        pixels.extend(row);
-        pixels.push(px!(nl));
-    }
-    pixels.pop(); // Remove the last line break
-    pixels
 }
 
 #[cfg(test)]
@@ -320,14 +188,17 @@ mod test {
     #[test]
     fn test_macro() {
         #[rustfmt::skip]
-        let grid = vec![
+        let grid = [
             px!(f 1, 5), px!(e 1), px!(nl),
             px!(f 2), px!(e 1), px!(nl),
         ];
 
-        assert!(!grid.is_square());
-        assert_eq!(grid.width(), 2);
-        assert_eq!(grid.height(), 3);
+        assert_eq!(grid[0], shrtstop_pixel(true, 5, 1));
+        assert_eq!(grid[1], shrtstop_pixel(false, 0, 1));
+        assert_eq!(grid[2], LINEBREAK);
+        assert_eq!(grid[3], shrtstop_pixel(true, 0, 2));
+        assert_eq!(grid[4], shrtstop_pixel(false, 0, 1));
+        assert_eq!(grid[5], LINEBREAK);
     }
 
     #[test]
@@ -337,54 +208,5 @@ mod test {
         assert!(px.filled());
         assert_eq!(px.luminosity(), 255);
         assert_eq!(px.width(), 1);
-    }
-
-    #[test]
-    fn test_render() {
-        #[rustfmt::skip]
-        let grid = [
-            px!(f 1, 5), px!(e 1), px!(nl),
-            px!(f 2), px!(e 1), px!(nl),
-        ];
-
-        assert_eq!(grid[0].as_grayscale(), vec![0]);
-        assert_eq!(grid[1].as_grayscale(), vec![255]);
-
-        let ascii = grid.as_ascii(false);
-        assert_eq!(ascii, "█ \n██ \n");
-    }
-
-    fn test_append() {
-        #[rustfmt::skip]
-        let left = vec![
-            px!(f 1), px!(e 1), px!(nl),
-            px!(f 2)
-        ];
-
-        #[rustfmt::skip]
-        let right = vec![
-            px!(e 2), px!(f 2), px!(nl),
-            px!(f 4), px!(nl),
-            px!(f 4),
-        ];
-
-        let appended = join_horizontal(&[&left, &right], 1);
-        #[rustfmt::skip]
-        assert_eq!(appended, vec![
-            px!(f 1), px!(e 1), px!(e 1), px!(e 2), px!(f 2), px!(nl),
-            px!(f 2), px!(e 1), px!(f 2), px!(f 2), px!(nl),
-            px!(e 3), px!(f 4)
-        ]);
-
-        let appended = join_vertical(&[left, right], 1);
-        #[rustfmt::skip]
-        assert_eq!(appended, vec![
-            px!(f 1), px!(e 1), px!(e 2), px!(nl),
-            px!(f 2), px!(e 2), px!(nl),
-            px!(nl),
-            px!(e 2), px!(f 2), px!(nl),
-            px!(f 4), px!(nl),
-            px!(f 4)
-        ]);
     }
 }

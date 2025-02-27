@@ -30,9 +30,10 @@ macro_rules! glyph {
             fn height_fungible(&self) -> bool {
                 $height_fungible
             }
-
-            fn render(&self, w: u32, h: u32) -> Vec<u32> {
-                let ($w, $h) = self.size(w, h);
+        }
+        impl $crate::renderer::shrtstop::ToShrtstop for $name {
+            fn to_shrtstop(&self, w: u32, h: u32) -> Vec<u32> {
+                let ($w, $h) = <Self as $crate::renderer::Renderer>::size(self, w, h);
                 $render
             }
         }
@@ -43,37 +44,3 @@ mod consonants;
 mod numbers;
 mod special;
 mod vowels;
-
-#[cfg(test)]
-mod test {
-    use crate::glyphs::ENCODING_TABLE;
-    use crate::renderer::shrtstop::ShrtstopGlyph;
-
-    #[test]
-    fn test_square() {
-        let mut errors = vec![];
-
-        for glyph in ENCODING_TABLE {
-            if !glyph.render(0, 0).is_square() {
-                errors.push(format!(
-                    "Glyph `{}` is not square at default size!",
-                    glyph.pronounciation()
-                ));
-            }
-
-            let h = if glyph.height_fungible() { 100 } else { 0 };
-            if !glyph.render(100, h).is_square() {
-                errors.push(format!(
-                    "Glyph `{}` is not square at scale!",
-                    glyph.pronounciation()
-                ));
-            }
-        }
-
-        eprintln!("Found {} errors:", errors.len());
-        for error in &errors {
-            eprintln!(" - {error}");
-        }
-        assert_eq!(errors.len(), 0);
-    }
-}
