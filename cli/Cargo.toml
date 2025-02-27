@@ -1,0 +1,9 @@
+[package]
+name = "glyphtool"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+libglyphtool = { path = "../core" }
+clap = { version = "4.5.30", features = ["derive"] }
+open = "5.3.0"
