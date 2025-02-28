@@ -47,6 +47,12 @@ impl GlyphStackRenderer {
         }
     }
 
+    /// Get the glyphs in the stack
+    #[must_use]
+    pub fn glyphs(&self) -> &[Box<dyn Glyph>] {
+        &self.glyphs
+    }
+
     /// Set the actual height of the stack
     pub fn set_height(&mut self, h: u32) {
         self.height = Some(h);

@@ -1,5 +1,5 @@
 //! Postprocessor module for image processing
-use image::{codecs::png::PngEncoder, GrayImage, ImageEncoder, RgbImage};
+use image::{codecs::png::PngEncoder, imageops::filter3x3, GrayImage, ImageEncoder, RgbImage};
 use rayon::iter::ParallelIterator;
 use std::path::Path;
 
@@ -139,6 +139,19 @@ impl OutputImage {
                     });
 
                 *self = Self::Rgb(new_image);
+            }
+        }
+    }
+
+    /// 1px radius blur for antialiasing
+    pub fn antialias(&mut self) {
+        const KERNEL: &[f32] = &[0.0, -1.0, 0.0, -1.0, 5.0, -1.0, 0.0, -1.0, 0.0];
+        match self {
+            Self::Grayscale(img) => {
+                *img = filter3x3(img, KERNEL);
+            }
+            Self::Rgb(img) => {
+                *img = filter3x3(img, KERNEL);
             }
         }
     }

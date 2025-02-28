@@ -142,7 +142,7 @@ pub trait ShrtstopPixel {
     #[inline(always)]
     fn as_grayscale(&self) -> Vec<u8> {
         let lum = self.luminosity() | (u8::from(!self.filled()) * 255);
-        vec![lum; self.width() as usize]
+        vec![lum.clamp(0, 240); self.width() as usize]
     }
 }
 

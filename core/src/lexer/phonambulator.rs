@@ -4,6 +4,8 @@
 //!
 //! If nothing is found, the user will be prompted to enter a new phonambulation.
 //!
+use std::collections::HashMap;
+
 use super::collections::WordKind;
 use crate::{
     database::Database,
@@ -48,6 +50,8 @@ pub struct Phonambulator<S: PhonambulationSource> {
     source: S,
     syllables: SyllabicModel,
     db: Database,
+
+    cache: HashMap<String, String>,
 }
 impl<S: PhonambulationSource> Phonambulator<S> {
     /// Create a new phonambulator
@@ -65,6 +69,8 @@ impl<S: PhonambulationSource> Phonambulator<S> {
             source,
             syllables,
             db,
+
+            cache: HashMap::new(),
         })
     }
 
@@ -104,7 +110,14 @@ impl<S: PhonambulationSource> Phonambulator<S> {
     ///
     /// # Errors
     /// Will return an error if the phoneme source fails, or if the database fails
-    pub fn phonambulate(&mut self, word: &str) -> EtroisResult<String> {
+    pub fn phonambulate<'a>(&'a mut self, word: &str) -> EtroisResult<&'a str> {
+        // Borrow checker fucks up here
+        // Unsafely ignore the lifetime for now
+        let inst = unsafe { &mut *std::ptr::from_mut::<Self>(self) };
+        if let Some(phonemes) = inst.cache.get(word) {
+            return Ok(phonemes);
+        }
+
         let mut phonemes = vec![];
 
         for group in word.split('\'') {
@@ -117,7 +130,8 @@ impl<S: PhonambulationSource> Phonambulator<S> {
         }
 
         let phonemes = phonemes.join("'").replace("''", "'");
-        Ok(phonemes)
+        self.cache.insert(word.to_string(), phonemes.clone());
+        Ok(self.cache.get(word).map_or("", String::as_str))
     }
 }
 

@@ -36,6 +36,8 @@ fn get_port() -> u16 {
 
 async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
     println!("Received request to render {} bytes...", body.text.len());
+
+    println!("Translating... ");
     let block = match lexer::parse(&body.text, None, AlwaysAutoSource) {
         Ok(block) => block,
         Err(e) => {
@@ -45,11 +47,18 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
         }
     };
 
+    println!("Rendering... ");
     let renderer = GlyphBlockRenderer::new(&block, body.margin as u32);
     let bitmap = renderer.to_bitmap();
     let mut image = OutputImage::new_grayscale(&bitmap);
+
+    println!("Antialiasing... ");
+    image.antialias();
+
+    println!("Scaling... ");
     image.scale(body.scale as usize);
 
+    println!("Filtering... ");
     match body.filter.as_deref() {
         Some("sketch") => image.filter_sketch(1.0),
         Some("space") => image.filter_space(1.0),
@@ -57,12 +66,14 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
         _ => {}
     }
 
+    println!("Encoding... ");
     let Ok(png_bytes) = image.into_png() else {
         return Json(RenderResponse::Error {
             message: "Failed to convert image to PNG".to_string(),
         });
     };
 
+    println!("Done!");
     let translated = block.to_string();
     let png_bytes = BASE64_STANDARD.encode(png_bytes);
     Json(RenderResponse::Success {
@@ -84,10 +95,10 @@ pub struct RenderRequest {
     pub filter: Option<String>,
 }
 fn default_scale() -> u8 {
-    3
+    5
 }
 fn default_margin() -> u8 {
-    2
+    10
 }
 
 #[derive(serde::Serialize)]

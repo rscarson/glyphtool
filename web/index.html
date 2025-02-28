@@ -6,25 +6,22 @@
     <title>E'Trois Translator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="container mt-5">
+<body class="container-fluid mt-5">
     <h1 class="text-center">E'Trois Translator</h1>
     
     <div class="mb-3">
         <label for="inputText" class="form-label">Enter Text:</label>
-        <textarea class="form-control" id="inputText" rows="3"></textarea>
+        <textarea class="form-control" id="inputText" rows="25"></textarea>
     </div>
     
     <button id="renderBtn" class="btn btn-primary w-100">Render</button>
+    <br/><br/>
     
-    <h2 class="mt-4">Translation:</h2>
-    <p id="translatedText" class="border p-2 bg-light"></p>
-    
-    <h2 class="mt-4">Rendered Image:</h2>
     <div class="text-center">
         <img id="renderedImage" class="img-fluid border" alt="Rendered translation will appear here" src="default.webp"/>
     </div>
-
-    <!--
+    <br/><br/>
+    <p id="translatedText" class="border p-2 bg-light">Translated Text</p>
     
     
                 <br/>
@@ -54,15 +51,14 @@
                         Granite
                     </label>
                 </div>
-    
-    -->
+
 
 <script type="text/javascript">
     document.getElementById("renderBtn").addEventListener("click", async () => {
         var text = document.getElementById('inputText').value;
         var image_out = document.getElementById('renderedImage');
         var text_out = document.getElementById('translatedText');
-      //  var filter = document.querySelector('input[name="filter"]:checked').value;
+        var filter = document.querySelector('input[name="filter"]:checked').value;
 
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:3000/render', true);
@@ -75,12 +71,12 @@
 
                 let url = 'data:image/png;base64,' + png_bytes;
                 image_out.src = url;
-                image_out.title = translated;
 
-                text_out.textContent = translated;
+                // Replace all newlines with <br> tags
+                text_out.innerHTML = translated.replace(/\n/g, '<br />');
             }
         };
-        xhr.send(JSON.stringify({text: text, filter: ""}));
+        xhr.send(JSON.stringify({text: text, filter: filter}));
     });
 </script>
 </body>

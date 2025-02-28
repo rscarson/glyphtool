@@ -59,10 +59,24 @@ impl GlyphRowRenderer {
     pub fn size(&self) -> (u32, u32) {
         (self.width, self.height)
     }
+
+    #[allow(clippy::borrowed_box)]
+    fn glyphs(&self) -> Vec<&Box<dyn Glyph>> {
+        self.stacks
+            .iter()
+            .flat_map(GlyphStackRenderer::glyphs)
+            .collect()
+    }
 }
 impl ToBitmap for GlyphRowRenderer {
     fn to_bitmap(&self) -> Bitmap {
         let mut bitmap = Bitmap::new(self.width as usize, self.height as usize);
+
+        let glyphs = self.glyphs();
+        if glyphs.len() == 1 && glyphs.first().unwrap().pronounciation() == "." {
+            return bitmap;
+        }
+
         let mut x = 0;
         for stack in self.stacks.iter().map(GlyphStackRenderer::to_bitmap) {
             bitmap.paste(&stack, x, 0);

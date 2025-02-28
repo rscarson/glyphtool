@@ -26,7 +26,7 @@ impl GlyphBlockRenderer {
 
         width += 2 * margin;
 
-        let spacers = 4 * (rows.len() as u32 - 1);
+        let spacers = 8 * (rows.len() as u32 - 1);
         height += spacers + 2 * margin;
 
         Self {
@@ -36,27 +36,106 @@ impl GlyphBlockRenderer {
             height,
         }
     }
-}
-impl ToBitmap for GlyphBlockRenderer {
-    fn to_bitmap(&self) -> Bitmap {
-        #[rustfmt::skip]
-        let spacer = vec![
-            px!(e self.margin),px!(f self.width - 2 * self.margin), px!(e self.margin), px!(nl),
-            px!(e self.margin),px!(f self.width - 2 * self.margin), px!(e self.margin),
-        ];
 
-        let mut bitmap = Bitmap::new(self.width as usize, self.height as usize);
-        let mut y = self.margin;
-        for (i, row) in self.rows.iter().enumerate() {
+    #[must_use]
+    fn render_column(rows: &[GlyphRowRenderer], width: u32, height: u32) -> Bitmap {
+        let mut bitmap = Bitmap::new(width as usize, height as usize);
+        let mut y = 0;
+        for (i, row) in rows.iter().enumerate() {
             if i != 0 {
-                bitmap.paste(&spacer.to_bitmap(), 0, y as usize);
-                y += 3;
+                y += 5;
             }
 
             let (_, height) = row.size();
             let row_bitmap = row.to_bitmap();
-            bitmap.paste(&row_bitmap, self.margin as usize, y as usize);
-            y += height + 1;
+            bitmap.paste(&row_bitmap, 0, y as usize);
+            y += height + 3;
+        }
+
+        bitmap
+    }
+}
+impl ToBitmap for GlyphBlockRenderer {
+    fn to_bitmap(&self) -> Bitmap {
+        let ratio = self.height as f32 / self.width as f32;
+        let columns = (ratio / 3.0).ceil() as usize;
+        let rows_per_column = self.rows.len() / columns;
+        let mut start = 0;
+        let mut cols = vec![];
+        let mut total = 0;
+
+        if ratio <= 3.0 {
+            let img = Self::render_column(
+                &self.rows,
+                self.width - 2 * self.margin,
+                self.height - 2 * self.margin,
+            );
+            let mut bitmap = Bitmap::new(self.width as usize, self.height as usize);
+            bitmap.paste(&img, self.margin as usize, self.margin as usize);
+            return bitmap;
+        }
+
+        for _ in 0..columns {
+            let mut end = start + rows_per_column;
+            if end > self.rows.len() {
+                end = self.rows.len();
+            }
+
+            cols.push(&self.rows[start..end]);
+            start = end;
+            total += end - start;
+        }
+        if total < self.rows.len() {
+            cols.push(&self.rows[start..]);
+        }
+        if cols[cols.len() - 1].is_empty() {
+            cols.pop();
+        }
+
+        println!(
+            "{:?} / {} / {ratio}",
+            cols.iter().map(|c| c.len()).collect::<Vec<_>>(),
+            self.rows.len()
+        );
+
+        let mut width = 0;
+        let mut height = 0;
+        let mut widths = vec![];
+        let mut heights = vec![];
+        for col in &cols {
+            let w = col.iter().map(|r| r.size().0).max().unwrap_or(0);
+            widths.push(w);
+
+            let h = col.iter().map(|r| r.size().1).sum::<u32>() + 8 * (col.len() as u32 - 1);
+            heights.push(h);
+
+            height = height.max(h);
+            width += w;
+        }
+        width += 15 * (columns as u32 - 1) + 2 * self.margin;
+        height += 2 * self.margin;
+
+        //
+        // Build v-separator
+        let mut sep = vec![];
+        for _ in 0..(height - 2 * self.margin) {
+            sep.extend([px!(e 1), px!(f 3, 192), px!(e 1), px!(nl)]);
+        }
+        sep.pop();
+
+        //
+        // Render final image
+        let mut bitmap = Bitmap::new(width as usize, height as usize);
+        let mut x = self.margin;
+        for (i, col) in cols.iter().enumerate() {
+            if i != 0 {
+                bitmap.paste(&sep.to_bitmap(), x as usize + 3, self.margin as usize);
+                x += 11;
+            }
+
+            let col_bitmap = Self::render_column(col, widths[i], heights[i]);
+            bitmap.paste(&col_bitmap, x as usize, self.margin as usize);
+            x += widths[i];
         }
 
         bitmap

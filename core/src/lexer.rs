@@ -31,10 +31,18 @@ pub fn parse<S: PhonambulationSource>(
     db_path: Option<&str>,
     phonambulation_src: S,
 ) -> EtroisResult<collections::Text> {
+    println!("Preprocessing...");
     let text = preprocessor::preprocess_text(text);
+
+    println!("Lexing...");
     let mut tokens = lex(&text);
 
+    println!("Phonambulating...");
     tokens.phonambulate(db_path, phonambulation_src)?;
+
+    println!("Reducing...");
     tokens.reduce();
+
+    println!("Collecting...");
     Ok(collections::Text::from_tokens(&tokens))
 }

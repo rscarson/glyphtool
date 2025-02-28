@@ -58,18 +58,18 @@ glyph!(
 #[rustfmt::skip]
 glyph!(
     glyph = WordStop,
-    min_size = (1, 5),
+    min_size = (3, 5),
     height_fungible = true,
     |w, h| {
         let mut pixels = vec![
-            px!(e 1), px!(nl), 
-            px!(f 1), px!(nl)];
+            px!(e 3), px!(nl), 
+            px!(e 1), px!(f 1), px!(e 1), px!(nl)];
 
         for _ in 0..(h - 4) {
-            pixels.extend([px!(e 1), px!(nl)]);
+            pixels.extend([px!(e 3), px!(nl)]);
         }
 
-        pixels.extend([px!(f 1), px!(nl), px!(e 1)]);
+        pixels.extend([px!(e 1), px!(f 1), px!(e 1), px!(nl), px!(e 3)]);
         pixels
     }
 );
@@ -77,18 +77,18 @@ glyph!(
 #[rustfmt::skip]
 glyph!(
     glyph = SentenceStop,
-    min_size = (3, 5),
+    min_size = (5, 5),
     height_fungible = true,
     |w, h| { 
         let mut pixels = vec![
-            px!(e 3), px!(nl), 
-            px!(f 1), px!(e 1), px!(f 1), px!(nl)];
+            px!(e 5), px!(nl), 
+            px!(e 1), px!(f 1), px!(e 1), px!(f 1), px!(e 1), px!(nl)];
 
         for _ in 0..(h - 4) {
-            pixels.extend([px!(e 3), px!(nl)]);
+            pixels.extend([px!(e 5), px!(nl)]);
         }
 
-        pixels.extend([px!(f 1), px!(e 1), px!(f 1), px!(nl), px!(e 3)]);
+        pixels.extend([px!(e 1), px!(f 1), px!(e 1), px!(f 1), px!(e 1), px!(nl), px!(e 5)]);
         pixels
     }
 );

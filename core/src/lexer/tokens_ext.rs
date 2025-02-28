@@ -71,7 +71,7 @@ impl TokensExt for Vec<Token> {
         for token in self {
             if let Token::Word(word) = token {
                 let phonemes = phonambulator.phonambulate(word)?;
-                *word = phonemes;
+                *word = phonemes.to_string();
             }
         }
 
