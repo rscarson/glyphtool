@@ -12,7 +12,7 @@ impl Bitmap {
     /// Create a new bitmap with the given dimensions
     #[must_use]
     pub fn new(width: usize, height: usize) -> Self {
-        Bitmap(vec![vec![0xF0; width]; height])
+        Bitmap(vec![vec![0xFF; width]; height])
     }
 
     /// Create a new bitmap from a vector of rows
@@ -52,12 +52,12 @@ impl Bitmap {
         let (dst_width, dst_height) = self.size();
 
         if y > dst_height || y + src_height > dst_height {
-            eprintln!("Bitmap::paste: Y out of bounds");
+            eprintln!("Bitmap::paste: Y out of bounds ({x}, {y})");
             eprintln!("{src}");
             return;
         }
         if x > dst_width || x + src_width > dst_width {
-            eprintln!("Bitmap::paste: X out of bounds");
+            eprintln!("Bitmap::paste: X out of bounds ({x}, {y})");
             eprintln!("{src}");
             return;
         }

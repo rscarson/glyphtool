@@ -1,6 +1,6 @@
 use super::{
     bitmap::{Bitmap, ToBitmap},
-    Renderer,
+    render_trait::Renderer,
 };
 use crate::glyphs::{special::Spacer, Glyph};
 
@@ -9,9 +9,9 @@ use crate::glyphs::{special::Spacer, Glyph};
 /// The width of the stack is the max of the min-widths of the glyphs
 pub struct GlyphStackRenderer {
     glyphs: Vec<Box<dyn Glyph>>,
-    width: u32,
-    min_height: u32,
-    height: Option<u32>,
+    width: usize,
+    min_height: usize,
+    height: Option<usize>,
 }
 impl GlyphStackRenderer {
     /// Create a new stack renderer
@@ -37,7 +37,7 @@ impl GlyphStackRenderer {
             width = width.max(Spacer.min_size().0);
         }
 
-        let total_spacing = glyphs.len() as u32 - 1;
+        let total_spacing = (glyphs.len() * 2) - 1;
         let min_height = height + total_spacing;
         Self {
             glyphs,
@@ -54,19 +54,19 @@ impl GlyphStackRenderer {
     }
 
     /// Set the actual height of the stack
-    pub fn set_height(&mut self, h: u32) {
+    pub fn set_height(&mut self, h: usize) {
         self.height = Some(h);
     }
 
     /// Get the actual height of the stack
     #[must_use]
-    pub fn height(&self) -> u32 {
+    pub fn height(&self) -> usize {
         self.height.unwrap_or(self.min_height)
     }
 
     /// Get the minimum size of the stack
     #[must_use]
-    pub fn min_size(&self) -> (u32, u32) {
+    pub fn min_size(&self) -> (usize, usize) {
         (self.width, self.min_height)
     }
 }
@@ -76,10 +76,10 @@ impl ToBitmap for GlyphStackRenderer {
 
         // Calculate the height of each glyph
         // We increase by 1 for each fungible glyph till we reach the desired height
-        let total_spacing = self.glyphs.len() as u32 - 1;
+        let total_spacing = (self.glyphs.len() * 2) - 1;
         let height_without_spacers = h - total_spacing;
         let mut height_table: Vec<_> = self.glyphs.iter().rev().map(|g| g.min_size().1).collect();
-        let mut total_height = height_table.iter().sum::<u32>();
+        let mut total_height = height_table.iter().sum::<usize>();
         while total_height < height_without_spacers {
             for (i, g) in self.glyphs.iter().rev().enumerate() {
                 if g.height_fungible() {
@@ -93,13 +93,12 @@ impl ToBitmap for GlyphStackRenderer {
             }
         }
 
-        let mut bitmap = Bitmap::new(self.width as usize, h as usize);
+        let mut bitmap = Bitmap::new(self.width, h);
         let mut y = 0;
         for (glyph, &height) in self.glyphs.iter().rev().zip(&height_table) {
-            let glyph = glyph.to_shrtstop(self.width, height);
-            let glyph = glyph.to_bitmap();
-            bitmap.paste(&glyph, 0, y as usize);
-            y += height + 1;
+            let glyph = glyph.render_glyph(self.width, height);
+            bitmap.paste(&glyph, 0, y);
+            y += height + 2;
         }
 
         bitmap

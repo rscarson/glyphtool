@@ -48,7 +48,7 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
     };
 
     println!("Rendering... ");
-    let renderer = GlyphBlockRenderer::new(&block, body.margin as u32);
+    let renderer = GlyphBlockRenderer::new(&block, body.margin as usize);
     let bitmap = renderer.to_bitmap();
     let mut image = OutputImage::new_grayscale(&bitmap);
 
@@ -67,7 +67,7 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
     }
 
     println!("Encoding... ");
-    let Ok(png_bytes) = image.into_png() else {
+    let Some(bytes) = image.into_webp(50.0) else {
         return Json(RenderResponse::Error {
             message: "Failed to convert image to PNG".to_string(),
         });
@@ -75,10 +75,11 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
 
     println!("Done!");
     let translated = block.to_string();
-    let png_bytes = BASE64_STANDARD.encode(png_bytes);
+    let bytes = BASE64_STANDARD.encode(bytes);
     Json(RenderResponse::Success {
         translated,
-        png_bytes,
+        bytes,
+        format: "webp".to_string(),
     })
 }
 
@@ -105,7 +106,8 @@ fn default_margin() -> u8 {
 pub enum RenderResponse {
     Success {
         translated: String,
-        png_bytes: String,
+        bytes: String,
+        format: String,
     },
     Error {
         message: String,

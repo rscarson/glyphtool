@@ -7,11 +7,11 @@
 #![allow(clippy::cast_precision_loss)]
 #![allow(clippy::cast_possible_wrap)]
 
+#[macro_use]
+pub mod renderer;
+
 pub mod database;
 pub mod error;
 pub mod glyphs;
 pub mod lexer;
 pub mod postprocessor;
-
-#[macro_use]
-pub mod renderer;

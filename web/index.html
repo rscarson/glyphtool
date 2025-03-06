@@ -6,54 +6,56 @@
     <title>E'Trois Translator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="container-fluid mt-5">
-    <h1 class="text-center">E'Trois Translator</h1>
-    
-    <div class="mb-3">
-        <label for="inputText" class="form-label">Enter Text:</label>
-        <textarea class="form-control" id="inputText" rows="25"></textarea>
+<body class="container py-5">
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">E'Trois Translator</h1>
     </div>
     
-    <button id="renderBtn" class="btn btn-primary w-100">Render</button>
-    <br/><br/>
-    
-    <div class="text-center">
-        <img id="renderedImage" class="img-fluid border" alt="Rendered translation will appear here" src="default.webp"/>
-    </div>
-    <br/><br/>
-    <p id="translatedText" class="border p-2 bg-light">Translated Text</p>
-    
-    
-                <br/>
-                <br/>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card p-4 shadow-sm">
+                <div class="mb-3">
+                    <label for="inputText" class="form-label fw-bold">Enter Text:</label>
+                    <textarea class="form-control" id="inputText" rows="8" placeholder="Type here..."></textarea>
+                </div>
+                
                 <strong>Filters</strong>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="filter" value="" checked>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                        No Filter
-                    </label>
+                <div class="d-flex gap-3 my-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filter" value="" checked>
+                        <label class="form-check-label">No Filter</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filter" value="sketch">
+                        <label class="form-check-label">Sketch</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filter" value="space">
+                        <label class="form-check-label">Space</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="filter" value="granite">
+                        <label class="form-check-label">Granite</label>
+                    </div>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="filter" value="sketch" checked>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                        Sketch
-                    </label>
+                
+                <button id="renderBtn" class="btn btn-primary w-100">Render</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8">
+            <div class="card p-4 shadow-sm">
+                <div class="text-center">
+                    <img id="renderedImage" class="img-fluid border" alt="Rendered translation will appear here" src="default.webp"/>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="filter" value="space" checked>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                        Space
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="filter" value="granite" checked>
-                    <label class="form-check-label" for="flexRadioDefault2">
-                        Granite
-                    </label>
-                </div>
-
-
-<script type="text/javascript">
+                <p id="translatedText" class="border p-3 bg-light mt-3">Translated Text</p>
+            </div>
+        </div>
+    </div>
+    
+<script>
     document.getElementById("renderBtn").addEventListener("click", async () => {
         var text = document.getElementById('inputText').value;
         var image_out = document.getElementById('renderedImage');
@@ -67,12 +69,12 @@
         xhr.onload = function() {
             if (xhr.status === 200) {
                 let translated = xhr.response.Success.translated;
-                let png_bytes = xhr.response.Success.png_bytes;
+                let bytes = xhr.response.Success.bytes;
+                let format = xhr.response.Success.format;
 
-                let url = 'data:image/png;base64,' + png_bytes;
+                let url = `data:image/${format};base64,` + bytes;
                 image_out.src = url;
 
-                // Replace all newlines with <br> tags
                 text_out.innerHTML = translated.replace(/\n/g, '<br />');
             }
         };

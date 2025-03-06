@@ -10,8 +10,8 @@ use crate::{
 /// Renders a single row of glyphs, inserting word and sentence stops as needed
 pub struct GlyphRowRenderer {
     stacks: Vec<GlyphStackRenderer>,
-    width: u32,
-    height: u32,
+    width: usize,
+    height: usize,
 }
 impl GlyphRowRenderer {
     /// Create a new row renderer
@@ -46,7 +46,7 @@ impl GlyphRowRenderer {
             stack.set_height(height);
         }
 
-        width += stacks.len() as u32 - 1;
+        width += (stacks.len() * 2) - 1;
         Self {
             stacks,
             width,
@@ -56,7 +56,7 @@ impl GlyphRowRenderer {
 
     /// Get the size of the row
     #[must_use]
-    pub fn size(&self) -> (u32, u32) {
+    pub fn size(&self) -> (usize, usize) {
         (self.width, self.height)
     }
 
@@ -70,7 +70,7 @@ impl GlyphRowRenderer {
 }
 impl ToBitmap for GlyphRowRenderer {
     fn to_bitmap(&self) -> Bitmap {
-        let mut bitmap = Bitmap::new(self.width as usize, self.height as usize);
+        let mut bitmap = Bitmap::new(self.width, self.height);
 
         let glyphs = self.glyphs();
         if glyphs.len() == 1 && glyphs.first().unwrap().pronounciation() == "." {
@@ -80,7 +80,7 @@ impl ToBitmap for GlyphRowRenderer {
         let mut x = 0;
         for stack in self.stacks.iter().map(GlyphStackRenderer::to_bitmap) {
             bitmap.paste(&stack, x, 0);
-            x += stack.size().0 + 1;
+            x += stack.size().0 + 2;
         }
 
         bitmap

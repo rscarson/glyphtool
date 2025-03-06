@@ -6,14 +6,14 @@ use crate::lexer::collections::Text;
 
 /// Renders an entire block of text, as a series of rows
 pub struct GlyphBlockRenderer {
-    margin: u32,
+    margin: usize,
     rows: Vec<GlyphRowRenderer>,
-    width: u32,
-    height: u32,
+    width: usize,
+    height: usize,
 }
 impl GlyphBlockRenderer {
     /// Create a new block renderer
-    pub fn new(text: &Text, margin: u32) -> Self {
+    pub fn new(text: &Text, margin: usize) -> Self {
         let rows: Vec<GlyphRowRenderer> = text.lines().iter().map(GlyphRowRenderer::new).collect();
 
         let mut width = 0;
@@ -26,7 +26,7 @@ impl GlyphBlockRenderer {
 
         width += 2 * margin;
 
-        let spacers = 8 * (rows.len() as u32 - 1);
+        let spacers = 8 * (rows.len() - 1);
         height += spacers + 2 * margin;
 
         Self {
@@ -38,8 +38,8 @@ impl GlyphBlockRenderer {
     }
 
     #[must_use]
-    fn render_column(rows: &[GlyphRowRenderer], width: u32, height: u32) -> Bitmap {
-        let mut bitmap = Bitmap::new(width as usize, height as usize);
+    fn render_column(rows: &[GlyphRowRenderer], width: usize, height: usize) -> Bitmap {
+        let mut bitmap = Bitmap::new(width, height);
         let mut y = 0;
         for (i, row) in rows.iter().enumerate() {
             if i != 0 {
@@ -48,7 +48,7 @@ impl GlyphBlockRenderer {
 
             let (_, height) = row.size();
             let row_bitmap = row.to_bitmap();
-            bitmap.paste(&row_bitmap, 0, y as usize);
+            bitmap.paste(&row_bitmap, 0, y);
             y += height + 3;
         }
 
@@ -58,7 +58,7 @@ impl GlyphBlockRenderer {
 impl ToBitmap for GlyphBlockRenderer {
     fn to_bitmap(&self) -> Bitmap {
         let ratio = self.height as f32 / self.width as f32;
-        let columns = (ratio / 3.0).ceil() as usize;
+        let columns = (ratio / 5.0).ceil() as usize;
         let rows_per_column = self.rows.len() / columns;
         let mut start = 0;
         let mut cols = vec![];
@@ -70,8 +70,8 @@ impl ToBitmap for GlyphBlockRenderer {
                 self.width - 2 * self.margin,
                 self.height - 2 * self.margin,
             );
-            let mut bitmap = Bitmap::new(self.width as usize, self.height as usize);
-            bitmap.paste(&img, self.margin as usize, self.margin as usize);
+            let mut bitmap = Bitmap::new(self.width, self.height);
+            bitmap.paste(&img, self.margin, self.margin);
             return bitmap;
         }
 
@@ -106,13 +106,13 @@ impl ToBitmap for GlyphBlockRenderer {
             let w = col.iter().map(|r| r.size().0).max().unwrap_or(0);
             widths.push(w);
 
-            let h = col.iter().map(|r| r.size().1).sum::<u32>() + 8 * (col.len() as u32 - 1);
+            let h = col.iter().map(|r| r.size().1).sum::<usize>() + 8 * (col.len() - 1);
             heights.push(h);
 
             height = height.max(h);
             width += w;
         }
-        width += 15 * (columns as u32 - 1) + 2 * self.margin;
+        width += 15 * (columns - 1) + 2 * self.margin;
         height += 2 * self.margin;
 
         //
@@ -125,16 +125,16 @@ impl ToBitmap for GlyphBlockRenderer {
 
         //
         // Render final image
-        let mut bitmap = Bitmap::new(width as usize, height as usize);
+        let mut bitmap = Bitmap::new(width, height);
         let mut x = self.margin;
         for (i, col) in cols.iter().enumerate() {
             if i != 0 {
-                bitmap.paste(&sep.to_bitmap(), x as usize + 3, self.margin as usize);
+                bitmap.paste(&sep.to_bitmap(), x + 3, self.margin);
                 x += 11;
             }
 
             let col_bitmap = Self::render_column(col, widths[i], heights[i]);
-            bitmap.paste(&col_bitmap, x as usize, self.margin as usize);
+            bitmap.paste(&col_bitmap, x, self.margin);
             x += widths[i];
         }
 

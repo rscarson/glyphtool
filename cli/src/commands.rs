@@ -50,6 +50,14 @@ enum Commands {
         /// Only render the glyphs that are not square
         #[arg(long)]
         only_invalid: bool,
+
+        /// The width of the rendered glyphs
+        #[arg(long, default_value = "0")]
+        width: usize,
+
+        /// The height of the rendered glyphs
+        #[arg(long, default_value = "0")]
+        height: usize,
     },
 
     /// Debug the renderer by rendering as ascii
@@ -66,9 +74,13 @@ impl Commands {
             Self::Render(command) => command.exec()?,
             Self::Image(command) => command.exec()?,
 
-            Self::DebugGlyphs { only_invalid } => {
+            Self::DebugGlyphs {
+                only_invalid,
+                width,
+                height,
+            } => {
                 for glyph in ENCODING_TABLE {
-                    let bitmap = glyph.to_shrtstop(0, 0).to_bitmap();
+                    let bitmap = glyph.render_glyph(*width, *height);
                     if *only_invalid && bitmap.is_valid() {
                         continue;
                     }

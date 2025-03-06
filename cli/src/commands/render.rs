@@ -33,7 +33,7 @@ pub struct Render {
 
     /// Margin around the text in pixels. Default is 1
     #[arg(short, long, default_value = "1")]
-    margin: u32,
+    margin: usize,
 
     /// Optionally add a visual effect to the text. [sketch, space]
     #[arg(short, long)]

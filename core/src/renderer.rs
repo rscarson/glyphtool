@@ -6,8 +6,10 @@ pub mod shrtstop;
 
 pub mod bitmap;
 
-pub mod glyphs;
+//pub mod glyphs;
 pub mod utilities;
+
+pub mod render_trait;
 
 mod block;
 mod row;
@@ -17,7 +19,7 @@ pub use block::GlyphBlockRenderer;
 pub use row::GlyphRowRenderer;
 pub use stack::GlyphStackRenderer;
 
-/// A trait for rendering a glyph in SHRTSTOP format
+/* A trait for rendering a glyph in SHRTSTOP format
 pub trait Renderer: shrtstop::ToShrtstop {
     /// The smallest size the glyph can be rendered at
     fn min_size(&self) -> (u32, u32);
@@ -30,4 +32,31 @@ pub trait Renderer: shrtstop::ToShrtstop {
 
     /// If true, the height of the glyph can be adjusted to fit the line height
     fn height_fungible(&self) -> bool;
+}*/
+
+macro_rules! impl_renderer {
+    (
+        $for:path,
+        glyph = [ $([ $($px:literal),+ ]),+ $(,)?],
+        vstretch = [$($v:literal),*],
+        hstretch = [$($h:literal),*]
+    ) => {
+        impl $crate::renderer::render_trait::Renderer for $for {
+            fn render_inner(&self) -> &[$crate::renderer::render_trait::RenderRow] {
+                &[
+                    $(
+                        $crate::renderer::render_trait::RenderRow::Static(&[$($px),+]),
+                    )+
+                ]
+            }
+
+            fn stretch_columns(&self) -> &[usize] {
+                &[ $($h,)* ]
+            }
+
+            fn stretch_rows(&self) -> &[usize] {
+                &[ $($v,)* ]
+            }
+        }
+    };
 }

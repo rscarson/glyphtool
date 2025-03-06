@@ -1,5 +1,7 @@
 //! Postprocessor module for image processing
-use image::{codecs::png::PngEncoder, imageops::filter3x3, GrayImage, ImageEncoder, RgbImage};
+use image::{
+    codecs::png::PngEncoder, imageops::filter3x3, DynamicImage, GrayImage, ImageEncoder, RgbImage,
+};
 use rayon::iter::ParallelIterator;
 use std::path::Path;
 
@@ -63,6 +65,24 @@ impl OutputImage {
                     image::ExtendedColorType::Rgb8,
                 )?;
                 Ok(buf)
+            }
+        }
+    }
+
+    /// Convert the image to a webp byte vector
+    ///
+    /// compression is a value between 0.0 and 100.0
+    #[must_use]
+    pub fn into_webp(mut self, compression: f32) -> Option<Vec<u8>> {
+        self.convert_to_rgb();
+        match self {
+            Self::Grayscale(_) => unreachable!(),
+            Self::Rgb(img) => {
+                let img = DynamicImage::from(img);
+                let encoder = webp::Encoder::from_image(&img).ok()?;
+                let img = encoder.encode(compression);
+                let buf = img.to_vec();
+                Some(buf)
             }
         }
     }
