@@ -23,6 +23,7 @@ pub fn lex(text: &str) -> Vec<Token> {
 /// - `text` - The text to parse
 /// - `db_path` - The path to the database
 /// - `phonambulation_src` - The source for user phoneme inputs
+/// - `skip_translation` - Skip the translation step, for writing in native E'trois
 ///
 /// # Errors
 /// Will return an error if the phonambulation fails
@@ -30,6 +31,7 @@ pub fn parse<S: PhonambulationSource>(
     text: &str,
     db_path: Option<&str>,
     phonambulation_src: S,
+    skip_translation: bool,
 ) -> EtroisResult<collections::Text> {
     println!("Preprocessing...");
     let text = preprocessor::preprocess_text(text);
@@ -37,8 +39,10 @@ pub fn parse<S: PhonambulationSource>(
     println!("Lexing...");
     let mut tokens = lex(&text);
 
-    println!("Phonambulating...");
-    tokens.phonambulate(db_path, phonambulation_src)?;
+    if !skip_translation {
+        println!("Phonambulating...");
+        tokens.phonambulate(db_path, phonambulation_src)?;
+    }
 
     println!("Reducing...");
     tokens.reduce();

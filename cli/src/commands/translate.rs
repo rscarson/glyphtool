@@ -32,7 +32,12 @@ impl Translate {
             true => Cow::Owned(std::fs::read_to_string(&self.source)?),
             false => Cow::Borrowed(&self.source),
         };
-        let mut block = lexer::parse(&input, self.db_path.as_deref(), StdinSource::new(self.auto))?;
+        let mut block = lexer::parse(
+            &input,
+            self.db_path.as_deref(),
+            StdinSource::new(self.auto),
+            false,
+        )?;
 
         if self.to_ipa {
             for word in block.words_mut() {

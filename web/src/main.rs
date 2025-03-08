@@ -38,7 +38,7 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
     println!("Received request to render {} bytes...", body.text.len());
 
     println!("Translating... ");
-    let block = match lexer::parse(&body.text, None, AlwaysAutoSource) {
+    let block = match lexer::parse(&body.text, None, AlwaysAutoSource, false) {
         Ok(block) => block,
         Err(e) => {
             return Json(RenderResponse::Error {

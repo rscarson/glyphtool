@@ -96,7 +96,7 @@ impl Commands {
             }
 
             Self::DebugRenderer { phoneme } => {
-                let text = lexer::parse(phoneme, None, AlwaysAutoSource)?;
+                let text = lexer::parse(phoneme, None, AlwaysAutoSource, false)?;
                 println!("{text}");
                 let block = GlyphBlockRenderer::new(&text, 0);
                 let rendered = block.to_bitmap();

@@ -1,6 +1,6 @@
 use super::StdinSource;
 use libglyphtool::{
-    error::EtroisResult,
+    error::{Error, EtroisResult},
     lexer,
     postprocessor::OutputImage,
     renderer::{bitmap::ToBitmap, GlyphBlockRenderer},
@@ -43,6 +43,10 @@ pub struct Render {
     #[arg(long, default_value = "1.0")]
     filter_stength: f32,
 
+    /// Skip the translation step. For writing in native E'trois
+    #[arg(long)]
+    skip_translation: bool,
+
     /// If provided, the output will be opened in the default image viewer
     #[arg(short, long)]
     open: bool,
@@ -55,7 +59,12 @@ impl Render {
         };
 
         println!("Translating {} bytes...", input.len());
-        let block = lexer::parse(&input, self.db_path.as_deref(), StdinSource::new(self.auto))?;
+        let block = lexer::parse(
+            &input,
+            self.db_path.as_deref(),
+            StdinSource::new(self.auto),
+            self.skip_translation,
+        )?;
         let renderer = GlyphBlockRenderer::new(&block, self.margin);
 
         println!("Rendering image...");
@@ -81,7 +90,10 @@ impl Render {
         }
 
         println!("Saving image...");
-        image.export(&self.destination)?;
+        let bytes = image
+            .into_webp(50.0)
+            .ok_or(Error::Other("Failed to encode image".to_string()))?;
+        std::fs::write(&self.destination, bytes)?;
 
         if self.open {
             open::that(&self.destination)?;
