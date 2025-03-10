@@ -12,6 +12,8 @@ use libglyphtool::{
     },
 };
 
+use crate::dictionary::Dictionary;
+
 mod database;
 mod post;
 mod render;
@@ -65,6 +67,16 @@ enum Commands {
         /// The phoneme to render
         phoneme: String,
     },
+
+    /// Spell check a block of text in native E'trois
+    SpellCheck {
+        /// The text to spell check
+        text: String,
+
+        /// If true, read text from a file
+        #[arg(short, long)]
+        path: bool,
+    },
 }
 impl Commands {
     fn exec(&self) -> EtroisResult<()> {
@@ -102,6 +114,18 @@ impl Commands {
                 let rendered = block.to_bitmap();
                 println!("{rendered}");
             }
+
+            Self::SpellCheck { text, path } => {
+                let text = if *path {
+                    std::fs::read_to_string(text)?
+                } else {
+                    text.clone()
+                };
+
+                let dict = Dictionary::load();
+                let words = dict.process(&text);
+                println!("Valid words: {}", words.len());
+            }
         }
 
         Ok(())
@@ -130,9 +154,7 @@ impl PhonambulationSource for StdinSource {
         println!("Vowel Sounds:       [ah/a   ]  [  e/i  ] [   u/uh   ] [ o ]");
         println!("                    [on/apple] [egg/ice] [oops/dunce] [oat]");
         println!("Closed Consonants:  [m] [p] [b] [f]");
-        println!(
-            "Open Consonants:    [t] [r] [rr | rolled r] [l] [s] [sh] [th] [n] [ng] [k] [d] [z]"
-        );
+        println!("Open Consonants:    [t] [r] [l] [s] [sh] [th] [n] [ng] [k] [d] [z]");
         println!("Special characters: [E' | Deific Mark   ] [O' | Posessive Mark] [A' | Honourific Mark]");
         println!("                    [y- | yellow, yonder] [h- | heather, hoot ] [w- | water, weather ]");
         println!();

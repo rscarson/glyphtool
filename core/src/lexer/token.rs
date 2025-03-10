@@ -29,7 +29,7 @@ pub enum Token {
     WordBoundary,
 
     /// A line boundary
-    #[regex("[\r\n]+")]
+    #[regex("([\r\n]|#[^\r\n]*)+")]
     LineBoundary,
 
     /// End of sentence punctuation

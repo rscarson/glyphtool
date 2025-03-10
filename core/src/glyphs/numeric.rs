@@ -55,6 +55,14 @@ impl Number {
     pub fn new(value: u32) -> Self {
         let mut digits = vec![];
 
+        if value == 0 {
+            return Self {
+                render: VALUE_0.to_vec(),
+                stretch_rows: [1, 5],
+                value,
+            };
+        }
+
         //
         // Starting at 10, mod at powers of ten to extract digits
         let mut divisor = 10;
@@ -151,6 +159,18 @@ impl Number {
         self.value
     }
 }
+
+#[rustfmt::skip]
+const VALUE_0: &[RenderRow] = &[
+    RenderRow::Static(&[1, 1, 1, 1, 1, 1, 1, 1, 1]),
+    RenderRow::Static(&[1, 0, 0, 0, 0, 0, 0, 0, 1]),
+    RenderRow::Static(&[1, 0, 0, 0, 0, 0, 0, 0, 1]),
+    RenderRow::Static(&[1, 0, 0, 1, 1, 1, 0, 0, 1]),
+    RenderRow::Static(&[1, 0, 0, 0, 0, 0, 0, 0, 1]),
+    RenderRow::Static(&[1, 0, 0, 0, 0, 0, 0, 0, 1]),
+    RenderRow::Static(&[1, 1, 1, 1, 1, 1, 1, 1, 1]),
+];
+
 
 #[rustfmt::skip]
 const ROW_0: &[RenderRow] = &[

@@ -7,6 +7,11 @@ use libglyphtool::{
 };
 use std::borrow::Cow;
 
+enum OutputKind {
+    Png,
+    Webp,
+}
+
 #[derive(Debug, clap::Parser)]
 pub struct Render {
     /// The text to render. If `--path` is provided, this will be treated as a file path
@@ -58,6 +63,16 @@ impl Render {
             false => Cow::Borrowed(&self.source),
         };
 
+        let destination = std::path::Path::new(&self.destination);
+        let kind = match destination.extension() {
+            Some(x) if x == "png" => OutputKind::Png,
+            Some(x) if x == "webp" => OutputKind::Webp,
+            _ => {
+                eprintln!("Unsupported output format. Supported formats are: png, webp");
+                return Err(Error::Other("Unsupported output format".to_string()));
+            }
+        };
+
         println!("Translating {} bytes...", input.len());
         let block = lexer::parse(
             &input,
@@ -90,9 +105,12 @@ impl Render {
         }
 
         println!("Saving image...");
-        let bytes = image
-            .into_webp(50.0)
-            .ok_or(Error::Other("Failed to encode image".to_string()))?;
+        let bytes = match kind {
+            OutputKind::Webp => image
+                .into_webp(50.0)
+                .ok_or(Error::Other("Failed to encode image".to_string()))?,
+            OutputKind::Png => image.into_png()?,
+        };
         std::fs::write(&self.destination, bytes)?;
 
         if self.open {
