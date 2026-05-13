@@ -128,6 +128,7 @@ Ke'tel            | The ability to see or witness something, also used as a verb
 Verb              | Meaning
 ------------------|--------
 Bi'la             | to become
+bi'ti             | to have been, to have done, was to be, was to have done
 Toah'bi           | to change/alter/destroy
 Rah'bi            | to maintain a physical thing
 Fel'bi            | to wound

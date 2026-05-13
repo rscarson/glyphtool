@@ -1,0 +1,22 @@
+# The E'trois Creation Myth
+# Written in the E'trois language
+#
+# use `cargo run render --path examples/creation_myth.txt examples/out/creation_myth.png --skip-translation --margin 10` to render this file
+#
+ti 1 pitsh O'aso'toah'ki ti'sir pu
+aso O'ke'kar'ki ti'bi toah'bi et rah'bi ru'tahn no'pe'nu aso et toah ti'bi
+.
+at'at 0 pitsh ifo ki pe'at'bi et pe'at rah'ki ki pe'bi
+pe'et O'la'si'rah'so'star ru'bi O'so'ti'si'rah ti'ki'kar at la O'at'at'sir'si'rah
+si'kar'ko ki titel ru'bi so'trois at'at trois. et at'at aso'toah O'ki'si'kar ti'kar 
+.
+ruh ki ti'tel'la. so'at trois aso'toah ti'no'bi
+ru'no la'at aso O'aso'toah'ke'kar A'ki ti'aso'kar 
+no'et at'at'trois toah'fel ki ti'tel
+O'A'ruh'trois ti'tsh'bi et toah'fel ti'at'bi
+.
+O'dal'si'rah A'O'aso'toah'ki ti'ko'tsh'bi ti'at O'ko'ato'rah at la'la'pi
+E'toah fel'ki ti'bi'la et trois'ki si'ruh
+E'aso're O'tsh'bi'ki ti'bi'la et ti'aso'kar nu'at A'ato ru'rah aso'tsh'ko'rah
+et E'rah O'ato'ki'ki ti'bi'la ru'bi E' si dal'bah ru'et si'rah si dal'bah
+fel'ke'kar E'aso're et trois'ki ti'aso'kar ru'tahn O'aso'toah'trois rah'bi

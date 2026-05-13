@@ -1,0 +1,14 @@
+#
+# An E'trois epitaph for Nadi, prophet of the 1st era of immortals.
+# Written in english
+#
+# Use `cargo run translate --path examples/fall_of_nadi.txt`
+# or `cargo run render --path examples/fall_of_nadi.txt examples/out/fall_of_nadi.webp`
+#
+By writ of A'One the elder, king of Hesua
+Last surviving of the council of E'Lne
+Be these chambers forever sealed
+Be forgotten the powers of Nadi
+Be lost the magics of storm and sky till time ends
+By my power I lay to rest
+This secret fire of the gods.
