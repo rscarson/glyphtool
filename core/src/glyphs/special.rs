@@ -1,6 +1,6 @@
 //! Modifier glyphs with special meanings
 //!
-//! These glyphs are used to modify the meaning of the word they are attached to.  
+//! These glyphs are used to modify the meaning of the word they are attached to.
 //! Also included are punctuation glyphs.
 use super::Glyph;
 

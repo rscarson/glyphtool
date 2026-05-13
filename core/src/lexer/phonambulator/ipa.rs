@@ -98,6 +98,65 @@ impl PhonemeExt for &str {
     }
 }
 
+/// Convert a string of IPA characters to a string of phonemes
+#[must_use]
+pub fn glyphs_to_ipa(input: &str) -> String {
+    let mut input = input;
+    let mut output = String::new();
+    while !input.is_empty() {
+        let mut found = false;
+        for (chars, replacement) in PHONEME_REPLACEMENT_TABLE {
+            if replacement.is_empty() {
+                continue;
+            }
+            if let Some(rest) = input.strip_prefix(replacement) {
+                output.push(chars[0]);
+                input = rest;
+                found = true;
+                break;
+            }
+        }
+
+        if input.starts_with('\'') {
+            output.push('.');
+            input = &input[1..];
+            found = true;
+        } else if input.starts_with(['?', '!', '.']) {
+            output.push_str("||");
+            input = &input[1..];
+            found = true;
+        } else if input.starts_with(' ') {
+            output.push(' ');
+            input = &input[1..];
+            found = true;
+        } else if input.starts_with(['\n', '\r']) {
+            output.push('\n');
+            input = &input[1..];
+            found = true;
+        } else if input.chars().next().unwrap_or_default().is_numeric() {
+            output.push_str(&input[..1]);
+            input = &input[1..];
+            found = true;
+        } else if let Some(rest) = input.strip_prefix("A'") {
+            output.push('w');
+            input = rest;
+            found = true;
+        } else if let Some(rest) = input.strip_prefix("E'") {
+            output.push('h');
+            input = rest;
+            found = true;
+        }
+
+        if !found {
+            eprintln!("No replacement found for phoneme: {input}");
+            input = &input[1..];
+            output += "?";
+        }
+    }
+
+    output
+}
+
 const PHONEME_REPLACEMENT_TABLE: &[(&[char], &str)] = &[
     //
     // Vowels

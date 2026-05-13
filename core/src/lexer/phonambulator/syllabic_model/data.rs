@@ -95,7 +95,7 @@ pub fn phonemes_to_output(phonemes: &[u8], db: &Database) -> Vec<u8> {
     output
 }
 
-/// Turns an input/output pair back into a phoneme sequence  
+/// Turns an input/output pair back into a phoneme sequence
 /// Each input/output pair is a sequence of phonemes, with the output indicating weather the next phoneme is a syllable break
 pub fn split_with(input: &[u8], output: &[u8], encoder: &EncodingTable) -> Vec<u8> {
     let split_char = encoder.encode("-");

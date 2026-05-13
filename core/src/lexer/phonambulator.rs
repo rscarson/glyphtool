@@ -16,6 +16,7 @@ use crate::{
 mod ipa;
 mod syllabic_model;
 
+pub use ipa::glyphs_to_ipa;
 pub use ipa::PhonemeExt;
 pub use syllabic_model::SyllabicModel;
 
@@ -105,7 +106,7 @@ impl<S: PhonambulationSource> Phonambulator<S> {
 
     /// Convert a word into a set of phonemes
     ///
-    /// The word will be split into groups by ', and each group is looked up in the database  
+    /// The word will be split into groups by ', and each group is looked up in the database
     /// User input will be requested for unrecognized words
     ///
     /// # Errors
@@ -138,7 +139,7 @@ impl<S: PhonambulationSource> Phonambulator<S> {
 /// Validate that user provided phonemes are valid
 ///
 /// # Errors
-/// If valid, a trimmed version of the input is returned  
+/// If valid, a trimmed version of the input is returned
 /// Otherwise, the input is returned with invalid phonemes replaced with '?'
 pub fn validate_phonemes(phonemes: &str) -> Result<&str, String> {
     let phonemes = phonemes.trim();

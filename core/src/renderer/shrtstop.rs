@@ -15,7 +15,7 @@
 //!
 //! 0 bytes are line breaks.
 //!
-//! Each block of elements is expected to be squared - that is, each row is the same length, as given by:  
+//! Each block of elements is expected to be squared - that is, each row is the same length, as given by:
 //! Sum [ 0x00FFFFFF & element ]
 //!
 #![allow(clippy::inline_always)]
@@ -82,7 +82,7 @@ fn shrtstop_width(v: u32) -> u32 {
     v & MASK_WIDTH
 }
 
-/// Defines a SHRTSTOP pixel element  
+/// Defines a SHRTSTOP pixel element
 /// Expects a luminosity level from 0 to 255
 #[inline(always)]
 #[must_use]
@@ -104,7 +104,7 @@ pub trait ShrtstopPixel {
     /// Returns the width of the pixel
     fn width(&self) -> u32;
 
-    /// Returns the pixel as an ASCII character  
+    /// Returns the pixel as an ASCII character
     /// This is intended for debugging purposes
     ///
     /// -  █  - Filled + Lum(0-4)
@@ -135,7 +135,7 @@ pub trait ShrtstopPixel {
 
     /// Returns the pixel as a grayscale byte value
     ///
-    /// Will scale luminosity from 0..15 to 0..255  
+    /// Will scale luminosity from 0..15 to 0..255
     /// If the pixel is empty, returns 255
     ///
     /// Whitespace is expected to be handled externally, and will result in 255

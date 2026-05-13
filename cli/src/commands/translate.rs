@@ -1,7 +1,11 @@
 use super::StdinSource;
 use libglyphtool::{
     error::EtroisResult,
-    lexer::{self, collections::WordKind, phonambulator::PhonemeExt},
+    lexer::{
+        self,
+        collections::WordKind,
+        phonambulator::{glyphs_to_ipa, PhonemeExt},
+    },
 };
 use std::borrow::Cow;
 
@@ -25,6 +29,10 @@ pub struct Translate {
     /// If provided, the output will be IPA symbols instead of phonemes
     #[arg(short, long)]
     to_ipa: bool,
+
+    /// If provided, the translation will be skipped
+    #[arg(short, long)]
+    skip_translation: bool,
 }
 impl Translate {
     pub fn exec(&self) -> EtroisResult<()> {
@@ -32,6 +40,27 @@ impl Translate {
             true => Cow::Owned(std::fs::read_to_string(&self.source)?),
             false => Cow::Borrowed(&self.source),
         };
+
+        //
+        // Skip translation modes
+        if self.skip_translation {
+            if self.to_ipa {
+                // skip lines starting with #
+                let input = input
+                    .lines()
+                    .filter(|l| !l.starts_with('#') && *l != ".")
+                    .collect::<Vec<_>>()
+                    .join("\n");
+
+                let ipa = glyphs_to_ipa(&input);
+                println!("{ipa}");
+                return Ok(());
+            } else {
+                println!("{input}");
+                return Ok(());
+            }
+        }
+
         let mut block = lexer::parse(
             &input,
             self.db_path.as_deref(),

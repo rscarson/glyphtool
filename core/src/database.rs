@@ -63,7 +63,7 @@ impl Database {
     /// Loads the database from the given data, resulting in a read-only in-memory database
     ///
     /// # Errors
-    /// Will return an error if a database operation fails  
+    /// Will return an error if a database operation fails
     /// Or if the data is not a valid sqlite database
     pub fn from_serialized(data: &[u8]) -> EtroisResult<Self> {
         let sz = data.len();

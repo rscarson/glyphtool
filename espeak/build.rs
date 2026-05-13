@@ -34,7 +34,7 @@ fn bind_espeak() {
     // Provide an ENV var with the path to the generated file
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let out_path = out_path.join("bindings.rs");
-    println!(concat!("cargo:rustc-env=OUT_PATH={}"), out_path.display());
+    println!("cargo:rustc-env=OUT_PATH={}", out_path.display());
 
     // Write the bindings to the $OUT_DIR/bindings.rs file.
     bindings

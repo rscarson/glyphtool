@@ -9,7 +9,9 @@ pub fn sepia(image: &mut RgbImage, strength: f32) {
     let mut factors = [
         0.393, 0.769, 0.189, 0.349, 0.686, 0.168, 0.272, 0.534, 0.131,
     ];
-    factors.iter_mut().for_each(|f| *f *= strength);
+    for f in &mut factors {
+        *f *= strength;
+    }
 
     image.par_chunks_mut(3).for_each(|px| {
         let (r, g, b) = (f32::from(px[0]), f32::from(px[1]), f32::from(px[2]));
@@ -34,7 +36,7 @@ pub fn perlin_noise(image: &mut RgbImage, strength: f32) {
         let nx = (f64::from(x) / width) * strength;
         let ny = (f64::from(y) / height) * strength;
         let value = perlin.get([nx, ny]);
-        let normalized = (((value + 1.0) / 2.0) * 255.0).clamp(0.0, 255.0);
+        let normalized = (f64::midpoint(value, 1.0) * 255.0).clamp(0.0, 255.0);
 
         // Reduce range to avoid overpowering
         let noise_factor = (normalized / 255.0) * 0.05;

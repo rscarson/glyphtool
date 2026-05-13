@@ -116,7 +116,7 @@ pub trait Renderer {
 
                 // Stretch the columns
                 let hstretch = hstretch[j];
-                row.extend(std::iter::repeat(value).take(hstretch));
+                row.extend(std::iter::repeat_n(value, hstretch));
             }
 
             for _ in 0..vstretch[i] {

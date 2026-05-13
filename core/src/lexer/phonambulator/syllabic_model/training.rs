@@ -172,7 +172,7 @@ impl StepLR {
     }
 
     pub fn step(&mut self) -> f64 {
-        if self.epoch % self.step_size == 0 && self.epoch > 0 {
+        if self.epoch.is_multiple_of(self.step_size) && self.epoch > 0 {
             self.lr *= self.gamma;
         }
 

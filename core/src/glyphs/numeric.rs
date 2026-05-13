@@ -111,12 +111,12 @@ impl Number {
             let mut padding = width - row.len();
             if nil_rows.contains(&i) {
                 // Pad to width with 1s
-                inner_row.extend(std::iter::repeat(1).take(padding));
+                inner_row.extend(std::iter::repeat_n(1, padding));
                 padding = 0;
             }
 
             // Pad with 0s to width + 2
-            inner_row.extend(std::iter::repeat(0).take(padding + 2));
+            inner_row.extend(std::iter::repeat_n(0, padding + 2));
 
             // Add right wall
             inner_row.push(1);
@@ -127,13 +127,13 @@ impl Number {
         //
         // Add header
         let mut header = vec![1];
-        header.extend(std::iter::repeat(1).take(width + 1));
+        header.extend(std::iter::repeat_n(1, width + 1));
         header.push(1);
         render.insert(0, RenderRow::Dynamic(header.clone()));
 
         // 2 empty lines...
         let mut blank = vec![1];
-        blank.extend(std::iter::repeat(0).take(width + 1));
+        blank.extend(std::iter::repeat_n(0, width + 1));
         blank.push(1);
         render.push(RenderRow::Dynamic(blank.clone()));
         render.push(RenderRow::Dynamic(blank));
@@ -170,7 +170,6 @@ const VALUE_0: &[RenderRow] = &[
     RenderRow::Static(&[1, 0, 0, 0, 0, 0, 0, 0, 1]),
     RenderRow::Static(&[1, 1, 1, 1, 1, 1, 1, 1, 1]),
 ];
-
 
 #[rustfmt::skip]
 const ROW_0: &[RenderRow] = &[
