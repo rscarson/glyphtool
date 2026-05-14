@@ -139,10 +139,29 @@ pub fn glyphs_to_ipa(input: &str) -> String {
             found = true;
         } else if let Some(rest) = input.strip_prefix("A'") {
             output.push('w');
+
+            if !rest.starts_with(['a', 'e', 'i', 'o', 'u']) {
+                output.push('e');
+            }
+
             input = rest;
             found = true;
         } else if let Some(rest) = input.strip_prefix("E'") {
+            output.push('j');
+
+            if !rest.starts_with(['a', 'e', 'i', 'o', 'u']) {
+                output.push('e');
+            }
+
+            input = rest;
+            found = true;
+        } else if let Some(rest) = input.strip_prefix("O'") {
             output.push('h');
+
+            if !rest.starts_with(['a', 'e', 'i', 'o', 'u']) {
+                output.push('e');
+            }
+
             input = rest;
             found = true;
         }
@@ -187,10 +206,7 @@ const PHONEME_REPLACEMENT_TABLE: &[(&[char], &str)] = &[
     (&['b'], "b"),
     (&['p'], "p"),
     //
-    // Special chars
-    (&['h'], "O'"),
-    //
     // Combinatory sounds
     (&['ɚ', 'ɜ'], "uhr"),
-    (&['ʔ', 'ʲ'], ""),
+    (&['ʔ', 'ʲ', 'h'], ""), // ignore stray h's for now - those have special meaning
 ];

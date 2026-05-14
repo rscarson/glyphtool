@@ -1,14 +1,28 @@
+##
+## Epitaph of Nadi, the sorcerer king, prophet of the 1st age of immortals
+## 
+## To render this file, use:
+## `cargo run render --path examples/fall_of_nadi.txt examples/out/fall_of_nadi.png --skip-translation --margin 10 --filter granite`
+##
 #
-# An E'trois epitaph for Nadi, prophet of the 1st era of immortals.
-# Written in english
+# Spirit return to the worldsoul
+ki trois'ki no'tsh'ke'kar'si'bi
+.
 #
-# Use `cargo run translate --path examples/fall_of_nadi.txt`
-# or `cargo run render --path examples/fall_of_nadi.txt examples/out/fall_of_nadi.webp`
+# Nadi, who was the sorcerer king, prophet of the 1st age of immortals
+..nadi.. O'ko'ki'duh're et ti'la O'tel'la'si'O'la'aso'rah ti'bi
 #
-By writ of A'One the elder, king of Hesua
-Last surviving of the council of E'Lne
-Be these chambers forever sealed
-Be forgotten the powers of Nadi
-Be lost the magics of storm and sky till time ends
-By my power I lay to rest
-This secret fire of the gods.
+# Nadi who wielded the magic of storm
+..nadi.. ti'at O'ko'ki'pe'A'ato'ko ti'kar
+#
+# Nadi who was First of the council of E'Lne
+..nadi.. ti'la O'ruh'so'rah'E'lne ti'bi
+#
+# Nadi who built legions
+..nadi.. so'fel'ke'kar're ti'no'tsh'ke'kar
+#
+# Nadi who unified pe'at'E'ato'ifo [the land above divine water]
+..nadi.. pe'at'E'ato'ifo ti'no'tsh'ke'kar'bi
+#
+# Nadi who is dead inside this place
+..nadi.. at'at toah'bi

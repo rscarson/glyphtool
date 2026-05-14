@@ -15,7 +15,7 @@ pub struct GlyphRowRenderer {
 }
 impl GlyphRowRenderer {
     /// Create a new row renderer
-    pub fn new(line: &Line) -> Self {
+    pub fn new(line: &Line, equalize_heights: bool) -> Self {
         let mut stacks = vec![];
 
         for sentence in line.sentences() {
@@ -42,8 +42,10 @@ impl GlyphRowRenderer {
             height = height.max(h);
         }
 
-        for stack in &mut stacks {
-            stack.set_height(height);
+        if equalize_heights {
+            for stack in &mut stacks {
+                stack.set_height(height);
+            }
         }
 
         width += (stacks.len() * 2) - 1;

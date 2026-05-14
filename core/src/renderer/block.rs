@@ -13,8 +13,13 @@ pub struct GlyphBlockRenderer {
 }
 impl GlyphBlockRenderer {
     /// Create a new block renderer
-    pub fn new(text: &Text, margin: usize) -> Self {
-        let rows: Vec<GlyphRowRenderer> = text.lines().iter().map(GlyphRowRenderer::new).collect();
+    #[must_use]
+    pub fn new(text: &Text, margin: usize, equalize_heights: bool) -> Self {
+        let rows: Vec<GlyphRowRenderer> = text
+            .lines()
+            .iter()
+            .map(|line| GlyphRowRenderer::new(line, equalize_heights))
+            .collect();
 
         let mut width = 0;
         let mut height = 0;

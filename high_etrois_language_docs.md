@@ -113,20 +113,27 @@ More complex words formed by combining root words. The meaning of the compound w
 Word              | Meaning
 ------------------|--------
 pi'tsh            | time section, era
+no'tsh            | to combine, to unite, to connect
+no'tsh'ke'kar     | To build or combine
 Ko'ato            | blood
+Ko'ki             | magic
+Duh're            | leader, ruler, commander
 Aso'toah          | Balance, Chaos
 Ko'ato'rah        | heart
+tel'la'si         | prophet, seer, witness, "one who foresees"
 Toah'fel          | death. Ending
 Ato'ki            | tears (crying)
 Rah'ki            | life
 Ko'rah            | metal (general)
 Aso'tsh'ko'rah    | metal chain, object
+Tsh'fel'rah'kar   | slicing weapon, sword
 A'ato             | sea
 No'si             | you
 Dal'bah           | blessed, gifted, granted
 Si'ruh            | name
 Ke'kar            | job, task
 Fel'ke'kar        | war
+fel'ke'kar're     | soldier, warrior
 Rah'kar           | tool
 Ru'tahn           | therefore, such that
 Ru'et             | just as, just like
@@ -171,6 +178,7 @@ Ki'kar            | to wake up, to awaken
 Tel'la            | to foresee, to predict
 ti'bi             | to have been, to have done, was to be, was to have done
 Aso'bi            | to keep, to maintain in a certain state, to preserve
+no'tsh'ke'kar'bi  | to build or combine something into a larger whole
 
 Adjective        | Meaning
 -----------------|--------
@@ -188,6 +196,15 @@ Ti'la            | first, original, initial
 la'la'ti         | last time, final moment, end of an era
 Ti'la'ti         | first time, original moment, beginning of an era
 
+Proper Noun         | Meaning
+--------------------|--------
+A'One               | Oldest known immortal
+Enone               | The first immortal
+Nadi                | The immortal who unified the east
+E'Lne               | City of E'Lne named for one of the twin demons
+E'Lua               | City of E'Lua named for one of the twin demons
+Pe'at'E'Ato'ifo     | "The land above divine water", name of the eastern part of the continent
+
 # Grammar
 
 E'Trois is a subject-object-verb language, meaning that the subject of a sentence comes first, followed by the object, and then the verb. For example, "I see you" is ordered as "I you see" in E'Trois.
@@ -196,14 +213,59 @@ Verbs can be prefixed with time or location markers, such as "Ti" for past and "
 
 So for an example from their creation myth:
 
-> The spirit's eternal task was to change and care for the sea to keep life and death as equals
+> The spirit's great task was to change and care for the sea to keep life and death as equals
 
-Where the subject "The spirit's eternal task" becomes a single compound posessive word "O'ke'kar'ki" or "the task of the spirit"
+Where the subject "The spirit's great task" becomes a single compound posessive word "O'A'ke'kar'ki" or "the great task that belongs to the spirit"
 
 Setting the new word order to:
 
-> [ the-task-of-the-spirit ] [ the sea ] [ to-change-and-care-for ] [such-that ] [ life and death ] [ as equals ] [ to keep ]
+> [ the-great-task-of-the-spirit ] [ the sea change-and-care-for ] [ was-to ] [such-that ] [ life and death ] [ as equals ] [ to keep ]
 
 Translating the new word order into E'Trois:
 
-> [ O'ke'kar'ki ] [ A'ato ] [ toah'bi et rah'bi ] [ ru'tahn ] [ rah'ki et toah'fel ] [ No'pe'nu ] [ aso'bi ]
+> [ O'A'ke'kar'ki ] [ A'ato toah'bi et rah'bi ] [ ti'bi ] [ ru'tahn ] [ rah'ki et toah'fel ] [ No'pe'nu ] [ aso'bi ]
+
+## Compound word formation
+
+Compound words are formed by combining roots and other compound words to alter the meaning - this is also how verb conjugation works. The last symbol in a compound word is the main root dominating meaning - for example toah'bi, uses the verb "to be" as the root, so this will also be a verb having to do with being. The toah, or "change/destruction" root, modifies the meaning of the verb to be "to change/alter/destroy". So "ki toah'bi" would be "to alter the spirit".
+
+Conjugation can also alter meaning, so staying with 'bi':
+```text
+ti'bi -> past tense of "to be", "was"
+no'bi -> negation of "to be", "not to be"
+la'at'bi -> compound conjugate using "la'at" or near/towards, so "to be near to"
+```
+
+The posessive marker "O'" can also be used to create compound words, for example "O'ki" is "of the spirit", but usually it is used as "O'thing'owner", for example "O'ke'kar'ki" combines "task" with "spirit" to create "the task of the spirit".
+
+The order of modifiers matters too, so:
+- "Sword" -> "tsh'fel'rah'kar" -> "dividing-illness-tool"
+- If you own a sword, you say "O'tsh'fel'rah'kar'si" -> "the sword of me"
+- If you own a sacred sword, you say "O'E'tsh'fel'rah'kar'si" -> "the divine sword of me"
+- If the owned thing is sacred, for example "The sacred sword of the sea", you say "E'O'tsh'fel'rah'kar'ki" -> "the sword of the sea which is divine"
+
+Numbers can be conjugated like verbs or adjectives, so "was 1" is "ti'set'u", and "the 10 which are here" is "at'set'ot'u"
+
+## Sentence structure
+
+As stated, the sentence order is subject-object-verb, with a nested structure and participles to link clauses together. Let's take the example from before:
+
+> [ O'A'ke'kar'ki ] [ A'ato toah'bi et rah'bi ] [ ti'bi ] [ ru'tahn ] [ rah'ki et toah'fel ] [ No'pe'nu ] [ aso'bi ]
+
+or:
+
+> [ the-great-task-of-the-spirit ] [ the sea change and care for ] [ was-to ] [such-that ] [ life and death ] [ as equals ] [ to keep ]
+
+We can break this down into 2 parts:
+
+> [ the-great-task-of-the-spirit change and care for the sea  was-to ] [such-that ] [ life and death as equals to keep ]
+
+For the first section, we split as follows:
+
+> [ the-great-task-of-the-spirit ] [ the sea    change and care for ] [ was-to ]
+> [ subject                      ] [ object                         ] [ verb   ] 
+> [ subject                      ] [ [subject ] [verbs            ] ] [ verb   ] 
+
+If there are adjectives, like if it was an "eternal" task, you'd place it before the noun, so "Aso O'A'ke'kar'ki" or "the eternal great task of the spirit".
+
+Important names are often formed with the honorific "A'" prefix, or delimited with '..', for example "The honoured nadi" will be either "A'nadi" or "..nadi.." depending on the context.

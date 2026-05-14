@@ -48,7 +48,7 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
     };
 
     println!("Rendering... ");
-    let renderer = GlyphBlockRenderer::new(&block, body.margin as usize);
+    let renderer = GlyphBlockRenderer::new(&block, body.margin as usize, body.equalize_heights);
     let bitmap = renderer.to_bitmap();
     let mut image = OutputImage::new_grayscale(&bitmap);
 
@@ -93,6 +93,9 @@ pub struct RenderRequest {
     #[serde(default = "default_margin")]
     pub margin: u8,
 
+    #[serde(default = "default_equalize_heights")]
+    pub equalize_heights: bool,
+
     pub filter: Option<String>,
 }
 fn default_scale() -> u8 {
@@ -100,6 +103,10 @@ fn default_scale() -> u8 {
 }
 fn default_margin() -> u8 {
     10
+}
+
+fn default_equalize_heights() -> bool {
+    true
 }
 
 #[derive(serde::Serialize)]

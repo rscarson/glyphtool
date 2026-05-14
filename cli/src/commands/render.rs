@@ -40,6 +40,10 @@ pub struct Render {
     #[arg(short, long, default_value = "1")]
     margin: usize,
 
+    /// If false, all glyphs will be rendered with the same height, which is the height of the tallest glyph.
+    #[arg(long, default_value = "false")]
+    no_equalize_heights: bool,
+
     /// Optionally add a visual effect to the text. [sketch, space]
     #[arg(short, long)]
     filter: Option<String>,
@@ -80,7 +84,7 @@ impl Render {
             StdinSource::new(self.auto),
             self.skip_translation,
         )?;
-        let renderer = GlyphBlockRenderer::new(&block, self.margin);
+        let renderer = GlyphBlockRenderer::new(&block, self.margin, !self.no_equalize_heights);
 
         println!("Rendering image...");
         let bitmap = renderer.to_bitmap();

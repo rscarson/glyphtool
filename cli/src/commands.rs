@@ -66,6 +66,10 @@ enum Commands {
     DebugRenderer {
         /// The phoneme to render
         phoneme: String,
+
+        /// If false, all glyphs will be rendered with the same height, which is the height of the tallest glyph.
+        #[arg(long, default_value = "false")]
+        no_equalize_heights: bool,
     },
 
     /// Spell check a block of text in native E'trois
@@ -107,10 +111,13 @@ impl Commands {
                 }
             }
 
-            Self::DebugRenderer { phoneme } => {
+            Self::DebugRenderer {
+                phoneme,
+                no_equalize_heights,
+            } => {
                 let text = lexer::parse(phoneme, None, AlwaysAutoSource, false)?;
                 println!("{text}");
-                let block = GlyphBlockRenderer::new(&text, 0);
+                let block = GlyphBlockRenderer::new(&text, 0, !*no_equalize_heights);
                 let rendered = block.to_bitmap();
                 println!("{rendered}");
             }
