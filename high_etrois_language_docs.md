@@ -34,6 +34,28 @@ There are also 3 special prefixes that can be added to words to change their mea
 - A' (Honorific Mark): Indicates respect or honor, often in the context of a title or name. For example "A'One" is a person named in honour of "One"
     - It is pronounced as "weh", so "A'One" would be pronounced as "wo-ne".
 
+# Numerals
+
+symbolically numbers are written in a tall rectangle with a system of dots and dashes where a dot represents one a vertical line represents three, and a horizontal line is zero. they are written in vertical stack lines with each line totaling up to nine and each row downwards representing a jump in a power of 10 
+
+the numbers can also be pronounced by applying the counting verb set as a prefix, in syllabic groups terminated by the T. these groups use the vowels to represent the six unique possible combination of two or fewer symbols of dots and dashes with compound syllables for the remainder:
+
+```
+set'o   0
+set'u   1
+set'ah  2
+set'a   3
+set'e   4
+set'ue  5
+set'i   6
+set'ui  7
+set'ahi 8
+set'ai  9
+set'ot'u 10
+```
+
+when spelled in this way, numbers can be conjugated like verbs or adjectives, ie "ti'set'u", or "was 1"1
+
 # Corpus
 
 ## Root Words
@@ -69,6 +91,7 @@ Kar          | To possess
 Sir          | To exist
 Bi           | To be
 Tel          | To see, to witness
+Set          | To count
 
 Adjective | Meaning
 ----------|--------
