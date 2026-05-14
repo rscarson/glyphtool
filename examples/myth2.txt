@@ -6,14 +6,14 @@
 ##
 #
 # Before the first age there existed only the spirit of chaos
-ti 0 pi'tsh pu O'aso'toah'ki ti'bi
+ti set'o pi'tsh pu O'aso'toah'ki ti'bi
 #
 # Its eternal task was to change and care for the sea to keep life and death as equals
 O'ke'kar'ki A'ato toah'bi et rah'bi ru'tahn rah'ki et toah'fel No'pe'nu aso'bi
 .
 #
 # On the first day it raised islands from the sea, and placed life upon them
-At'at 0 pi'tsh O'ifo'A'ato ti'pe'at'bi et O'aso'toah'ki rah'ki pe'ah ifo pe'bi
+At'at set'o pi'tsh O'ifo'A'ato ti'pe'at'bi et O'aso'toah'ki rah'ki pe'ah ifo pe'bi
 #
 # The children of the stars, who are our ancestors, awakened in our new home
 ti'si'rah O'la'si'rah'stahr O'at'at'sir'si'rah ti'ki'kar
