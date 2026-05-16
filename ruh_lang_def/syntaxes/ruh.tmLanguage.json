@@ -1,0 +1,68 @@
+{
+  "scopeName": "source.ruh",
+  "name": "RUH",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#coloredPrefixes"
+    },
+    {
+      "include": "#validTokens"
+    },
+    {
+      "include": "#invalidTokens"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.ruh",
+          "match": "#.*$"
+        }
+      ]
+    },
+
+    "coloredPrefixes": {
+      "patterns": [
+        {
+          "name": "keyword.control.red.ruh",
+          "match": "\\bE'"
+        },
+        {
+          "name": "keyword.control.blue.ruh",
+          "match": "\\bO'"
+        },
+        {
+          "name": "keyword.control.green.ruh",
+          "match": "\\bA'"
+        },
+
+        {
+          "name": "punctuation.separator.apostrophe.ruh",
+          "match": "'"
+        }
+      ]
+    },
+
+    "validTokens": {
+      "patterns": [
+        {
+          "name": "string.unquoted.valid.ruh",
+          "match": "\\b(sh|th|ng|ah|uh|m|p|b|f|t|r|l|s|n|k|d|z|o|a|e|i|u)\\b"
+        }
+      ]
+    },
+
+    "invalidTokens": {
+      "patterns": [
+        {
+          "name": "invalid.illegal.ruh",
+          "match": "\\b(?!sh\\b|th\\b|ng\\b|ah\\b|uh\\b|m\\b|p\\b|b\\b|f\\b|t\\b|r\\b|l\\b|s\\b|n\\b|k\\b|d\\b|z\\b|o\\b|a\\b|e\\b|i\\b|u\\b)[A-Za-z]+\\b"
+        }
+      ]
+    }
+  }
+}

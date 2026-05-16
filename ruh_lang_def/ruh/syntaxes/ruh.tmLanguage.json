@@ -1,0 +1,65 @@
+{
+  "scopeName": "source.ruh",
+  "name": "RUH",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#punctuation" },
+    { "include": "#coloredPrefixes" },
+    { "include": "#validSequences" },
+    { "include": "#invalidCharacters" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.ruh",
+          "match": "^#.*$"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.definition.string.ruh",
+          "match": "\\.+"
+        }
+      ]
+    },
+    "coloredPrefixes": {
+      "patterns": [
+        {
+          "name": "markup.inserted.ruh", 
+          "match": "E'"
+        },
+        {
+          "name": "markup.deleted.ruh", 
+          "match": "O'"
+        },
+        {
+          "name": "markup.changed.ruh", 
+          "match": "A'"
+        },
+        {
+          "name": "punctuation.separator.apostrophe.ruh",
+          "match": "'"
+        }
+      ]
+    },
+    "validSequences": {
+      "patterns": [
+        {
+          "name": "variable.other.member.ruh",
+          "match": "sh|th|ng|ah|uh|m|p|b|f|t|r|l|s|n|k|d|z|o|a|e|i|u"
+        }
+      ]
+    },
+    "invalidCharacters": {
+      "patterns": [
+        {
+          "name": "invalid.illegal.ruh",
+          "match": "[A-Za-z0-9]"
+        }
+      ]
+    }
+  }
+}

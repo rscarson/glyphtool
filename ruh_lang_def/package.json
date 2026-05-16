@@ -1,0 +1,25 @@
+{
+  "name": "ruh-language",
+  "displayName": "RUH Language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "ruh",
+        "aliases": ["RUH", "ruh"],
+        "extensions": [".ruh"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ruh",
+        "scopeName": "source.ruh",
+        "path": "./syntaxes/ruh.tmLanguage.json"
+      }
+    ]
+  }
+}

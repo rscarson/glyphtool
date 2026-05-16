@@ -1,0 +1,31 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "RUH Language",
+  "scopeName": "source.ruh",
+  "patterns": [
+    {
+      "name": "comment.line.number-sign.ruh",
+      "match": "^#.*$"
+    },
+    {
+      "name": "markup.bold.red.ruh",
+      "match": "E'"
+    },
+    {
+      "name": "markup.bold.blue.ruh",
+      "match": "O'"
+    },
+    {
+      "name": "markup.bold.green.ruh",
+      "match": "A'"
+    },
+    {
+      "name": "variable.parameter.ruh",
+      "match": "\\[(m|p|b|f|t|r|l|s|sh|th|n|ng|k|d|z|o|a|ah|e|i|u|uh)\\]"
+    },
+    {
+      "name": "invalid.illegal.ruh",
+      "match": "[^\\s#\\[\\]'EOA]+|(?<![EO])'|'(?![\\s]|$)"
+    }
+  ]
+}

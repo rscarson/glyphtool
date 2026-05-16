@@ -112,6 +112,8 @@ More complex words formed by combining root words. The meaning of the compound w
 
 Word              | Meaning
 ------------------|--------
+duh'ruh           | Law, command, rule, order
+kar'duh           | commanded or ruled thing/place/person
 pi'tsh            | time section, era
 no'tsh            | to combine, to unite, to connect
 no'tsh'ke'kar     | To build or combine
@@ -139,7 +141,7 @@ Ru'tahn           | therefore, such that
 Ru'et             | just as, just like
 Ru'bi             | which are
 Ru'no             | however
-Ru'rah            | using
+Ru'rah            | using / because of
 Si'kar'rah        | Mind, brain, soul
 Si'kar'ko         | culture (the spark of thought)
 No'et             | neither, and also not
@@ -150,10 +152,15 @@ E'rah             | demon
 Si'rah            | mankind, sentient life
 La'si'rah         | child
 Ti'si'rah         | ancestor
+stahr'si'rah      | Outsider, stranger, external force
 Aso'toah          | Chaos
 O'Aso'toah'ki     | The Primordial Spirit of Chaos
 Aso're            | Champion of Immortals
 Ke'tel            | The ability to see or witness something, also used as a verb "I can see" or "I can witness"
+aso'pi            | eternal / timeless / forever
+aso'ti            | physically infinite distance or size
+et'pe             | and also, as well as, in addition to
+pe'et'si          | everyone, all people
 
 Verb              | Meaning
 ------------------|--------
@@ -166,7 +173,7 @@ Toah'fel'bi       | to destroy
 Tsh'bi            | to separate, to shatter
 Nu'at'bi          | to lower
 Pe'at'bi          | to raise up
-At'at'bi          | to enter into
+At'at'bi          | to enter into or contain
 At'bi             | to go to
 No'at'bi          | to leave, to exit, to stray from
 Pe'bi             | to add
@@ -179,6 +186,9 @@ Tel'la            | to foresee, to predict
 ti'bi             | to have been, to have done, was to be, was to have done
 Aso'bi            | to keep, to maintain in a certain state, to preserve
 no'tsh'ke'kar'bi  | to build or combine something into a larger whole
+no'tsh'ke'kar'si'bi | To be built or combined into a larger whole, to be part of a larger whole
+aso'no'tsh'bi     | to bind or trap
+aso'no'tsh'si'bi  | to be bound or trapped
 
 Adjective        | Meaning
 -----------------|--------
@@ -191,8 +201,8 @@ So'at            | between
 No'at            | away
 No'at'ki         | trapped, stuck
 Pe'et            | all
-La'la            | final, ultimate, last
-Ti'la            | first, original, initial
+La'la            | final, ultimate, last, end
+Ti'la            | first, original, initial, start
 la'la'ti         | last time, final moment, end of an era
 Ti'la'ti         | first time, original moment, beginning of an era
 
@@ -234,6 +244,7 @@ Conjugation can also alter meaning, so staying with 'bi':
 ti'bi -> past tense of "to be", "was"
 no'bi -> negation of "to be", "not to be"
 la'at'bi -> compound conjugate using "la'at" or near/towards, so "to be near to"
+ifo -> land, si'ifo -> "this land", at'ifo -> "near-land"
 ```
 
 The posessive marker "O'" can also be used to create compound words, for example "O'ki" is "of the spirit", but usually it is used as "O'thing'owner", for example "O'ke'kar'ki" combines "task" with "spirit" to create "the task of the spirit".
