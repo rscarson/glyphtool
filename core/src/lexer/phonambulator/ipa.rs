@@ -190,7 +190,7 @@ const PHONEME_REPLACEMENT_TABLE: &[(&[char], &str)] = &[
     // Open consonants
     (&['ʃ', 'ʒ'], "sh"),
     (&['ð', 'θ'], "th"),
-    (&['r', 'ɹ'], "r"),
+    (&['r', 'ɹ', 'R'], "r"),
     (&['l'], "l"),
     (&['ŋ'], "ng"),
     (&['n'], "n"),

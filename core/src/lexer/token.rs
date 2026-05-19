@@ -29,11 +29,15 @@ pub enum Token {
     WordBoundary,
 
     /// A line boundary
-    #[regex("([\r\n]|#[^\r\n]*)+")]
+    #[regex("\n\r|\r\n|[\r\n]")]
     LineBoundary,
 
+    /// A comment
+    #[regex(r"(#|//|>).*(\n\r|\r\n|[\r\n])?")]
+    Comment,
+
     /// End of sentence punctuation
-    #[regex("[.,;:!?]+ *")]
+    #[regex("[.,;:!?] *")]
     SentenceBoundary,
 }
 

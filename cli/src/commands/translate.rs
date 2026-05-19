@@ -41,9 +41,14 @@ impl Translate {
             false => Cow::Borrowed(&self.source),
         };
 
+        let mut skip_translation = self.skip_translation;
+        if self.path && self.source.ends_with(".ruh") {
+            skip_translation = true; // .ruh files are already in E'trois, so we can skip translation
+        }
+
         //
         // Skip translation modes
-        if self.skip_translation {
+        if skip_translation {
             if self.to_ipa {
                 // skip lines starting with #
                 let input = input

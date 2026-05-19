@@ -88,6 +88,10 @@ impl TokensExt for Vec<Token> {
                 Token::Number(n) => tokens.push(Token::Number(n)),
 
                 //
+                // Comment
+                Token::Comment => (),
+
+                //
                 // Continuation of the current word
                 Token::Word(word) => {
                     let word = preprocess_word(&word);
@@ -148,15 +152,6 @@ impl TokensExt for Vec<Token> {
         if !compound_word.is_empty() {
             let word = take(&mut compound_word);
             tokens.push(Token::Word(word));
-        }
-
-        //
-        // Remove trailing and leading Line/Sentence boundaries
-        while let Some(Token::LineBoundary | Token::SentenceBoundary) = tokens.first() {
-            tokens.remove(0);
-        }
-        while let Some(Token::LineBoundary | Token::SentenceBoundary) = tokens.last() {
-            tokens.pop();
         }
 
         *self = tokens;

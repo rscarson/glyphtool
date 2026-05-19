@@ -8,7 +8,7 @@ use libglyphtool::{
     },
     renderer::{
         bitmap::{Bitmap, ToBitmap},
-        GlyphBlockRenderer,
+        GlyphBlockOptions, GlyphBlockRenderer,
     },
 };
 
@@ -116,8 +116,14 @@ impl Commands {
                 no_equalize_heights,
             } => {
                 let text = lexer::parse(phoneme, None, AlwaysAutoSource, false)?;
+                let options = GlyphBlockOptions {
+                    margin: 0,
+                    equalize_heights: !*no_equalize_heights,
+                    include_stop: false,
+                };
+
                 println!("{text}");
-                let block = GlyphBlockRenderer::new(&text, 0, !*no_equalize_heights);
+                let block = GlyphBlockRenderer::new(&text, options);
                 let rendered = block.to_bitmap();
                 println!("{rendered}");
             }

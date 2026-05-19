@@ -16,7 +16,7 @@ pub struct GlyphStackRenderer {
 impl GlyphStackRenderer {
     /// Create a new stack renderer
     #[must_use]
-    pub fn new(mut glyphs: Vec<Box<dyn Glyph>>) -> Self {
+    pub fn new(mut glyphs: Vec<Box<dyn Glyph>>, equalize_heights: bool) -> Self {
         let mut width = 0;
         let mut height = 0;
         let mut has_fungible = false;
@@ -31,7 +31,7 @@ impl GlyphStackRenderer {
         }
 
         // If no fungible glyphs are present, we need to add a spacer glyph
-        if !has_fungible {
+        if !has_fungible && equalize_heights {
             glyphs.push(Box::new(Spacer));
             height += Spacer.min_size().1;
             width = width.max(Spacer.min_size().0);

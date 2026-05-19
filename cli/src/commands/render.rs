@@ -3,7 +3,7 @@ use libglyphtool::{
     error::{Error, EtroisResult},
     lexer,
     postprocessor::OutputImage,
-    renderer::{bitmap::ToBitmap, GlyphBlockRenderer},
+    renderer::{bitmap::ToBitmap, GlyphBlockOptions, GlyphBlockRenderer},
 };
 use std::borrow::Cow;
 
@@ -36,13 +36,17 @@ pub struct Render {
     #[arg(short, long, default_value = "3")]
     scale: usize,
 
-    /// Margin around the text in pixels. Default is 1
-    #[arg(short, long, default_value = "1")]
+    /// Margin around the text in pixels. Default is 5
+    #[arg(short, long, default_value = "5")]
     margin: usize,
 
     /// If false, all glyphs will be rendered with the same height, which is the height of the tallest glyph.
     #[arg(long, default_value = "false")]
     no_equalize_heights: bool,
+
+    /// If true, line stops will not be included at the end of each line
+    #[arg(long, default_value = "false")]
+    no_line_stops: bool,
 
     /// Optionally add a visual effect to the text. [sketch, space]
     #[arg(short, long)]
@@ -53,6 +57,7 @@ pub struct Render {
     filter_stength: f32,
 
     /// Skip the translation step. For writing in native E'trois
+    /// Automatic for files ending in .ruh, which are already in E'trois
     #[arg(long)]
     skip_translation: bool,
 
@@ -77,14 +82,25 @@ impl Render {
             }
         };
 
+        let mut skip_translation = self.skip_translation;
+        if self.path && self.source.ends_with(".ruh") {
+            skip_translation = true; // .ruh files are already in E'trois, so we can skip translation
+        }
+
         println!("Translating {} bytes...", input.len());
         let block = lexer::parse(
             &input,
             self.db_path.as_deref(),
             StdinSource::new(self.auto),
-            self.skip_translation,
+            skip_translation,
         )?;
-        let renderer = GlyphBlockRenderer::new(&block, self.margin, !self.no_equalize_heights);
+
+        let options = GlyphBlockOptions {
+            margin: self.margin,
+            equalize_heights: !self.no_equalize_heights,
+            include_stop: !self.no_line_stops,
+        };
+        let renderer = GlyphBlockRenderer::new(&block, options);
 
         println!("Rendering image...");
         let bitmap = renderer.to_bitmap();

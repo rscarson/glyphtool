@@ -1,5 +1,7 @@
 # Alphabet
 
+For a visual guide, see symbol_guide.png
+
 ## Vowels
 O, as in "go" or "so"
 A, as in "apple" or "cat"
@@ -36,7 +38,22 @@ There are also 3 special prefixes that can be added to words to change their mea
 
 # Numerals
 
-symbolically numbers are written in a tall rectangle with a system of dots and dashes where a dot represents one a vertical line represents three, and a horizontal line is zero. they are written in vertical stack lines with each line totaling up to nine and each row downwards representing a jump in a power of 10 
+symbolically numbers are written in a tall rectangle with a system of dots and dashes where a dot represents one a vertical line represents three, and a horizontal line is zero. they are written in vertical stack lines with each line totaling up to nine and each row downwards representing a jump in a power of 10.
+
+For example, here are the numbers 0-4, and 53
+
+█████████     ███████     ██████████     ██████████     ██████████     █████████████
+█       █  █  █     █  █  █        █  █  █        █  █  █        █  █  █           █
+█       █     █     █     █        █     █        █     █        █     █           █
+█       █     █     █     █        █     █        █     █        █     █  █        █
+█       █     █     █     █        █     █        █     █        █     █  █        █
+█       █     █  █  █     █  █  █  █     █  █     █     █  █  █  █     █           █
+█  ███  █     █     █     █        █     █  █     █     █  █     █     █           █
+█       █     █     █     █        █     █        █     █        █     █  █  █  █  █
+█       █     █     █     █        █     █        █     █        █     █  █        █
+█       █     █     █     █        █     █        █     █        █     █           █
+█       █  █  █     █  █  █        █  █  █        █  █  █        █  █  █           █
+█████████     ███████     ██████████     ██████████     ██████████     █████████████
 
 the numbers can also be pronounced by applying the counting verb set as a prefix, in syllabic groups terminated by the T. these groups use the vowels to represent the six unique possible combination of two or fewer symbols of dots and dashes with compound syllables for the remainder:
 
@@ -54,7 +71,7 @@ set'ai  9
 set'ot'u 10
 ```
 
-when spelled in this way, numbers can be conjugated like verbs or adjectives, ie "ti'set'u", or "was 1"1
+when spelled in this way, numbers can be conjugated like verbs or adjectives, ie "ti'set'u", or "was 1"
 
 # Corpus
 
@@ -84,6 +101,8 @@ Stahr        | Outside, beyond, unknown
 Tsh          | section, part, division
 Ifo          | Island, land
 Ke           | agency, motivation, ability
+Lua          | law
+Ne           | magic
 
 Verb         | Meaning
 -------------|--------
@@ -92,6 +111,7 @@ Sir          | To exist
 Bi           | To be
 Tel          | To see, to witness
 Set          | To count
+Na           | To question, to ask
 
 Adjective | Meaning
 ----------|--------
@@ -112,13 +132,11 @@ More complex words formed by combining root words. The meaning of the compound w
 
 Word              | Meaning
 ------------------|--------
-duh'ruh           | Law, command, rule, order
 kar'duh           | commanded or ruled thing/place/person
 pi'tsh            | time section, era
 no'tsh            | to combine, to unite, to connect
 no'tsh'ke'kar     | To build or combine
 Ko'ato            | blood
-Ko'ki             | magic
 Duh're            | leader, ruler, commander
 Aso'toah          | Balance, Chaos
 Ko'ato'rah        | heart
@@ -137,13 +155,10 @@ Ke'kar            | job, task
 Fel'ke'kar        | war
 fel'ke'kar're     | soldier, warrior
 Rah'kar           | tool
-Ru'tahn           | therefore, such that
-Ru'et             | just as, just like
-Ru'bi             | which are
-Ru'no             | however
-Ru'rah            | using / because of
-Si'kar'rah        | Mind, brain, soul
-Si'kar'ko         | culture (the spark of thought)
+si'kar            | thought, mind, idea
+aso'si'kar        | memory, knowledge
+lua'si'kar        | culture, tradition
+rah'si'kar        | language, words (literally "thoughts with a body")
 No'et             | neither, and also not
 Nu'si'kar         | confused
 At'at'sir         | home
@@ -161,6 +176,16 @@ aso'pi            | eternal / timeless / forever
 aso'ti            | physically infinite distance or size
 et'pe             | and also, as well as, in addition to
 pe'et'si          | everyone, all people
+tel'pe'et         | visible, able to be seen
+
+Adverb            | Meaning
+------------------|------------------|
+ru'kar            | with, having
+Ru'tahn           | therefore, such that
+Ru'et             | just as, just like
+Ru'bi             | which are / is
+Ru'no             | however
+Ru'rah            | using / because of
 
 Verb              | Meaning
 ------------------|--------
@@ -172,6 +197,8 @@ Fel'bi            | to wound
 Toah'fel'bi       | to destroy 
 Tsh'bi            | to separate, to shatter
 Nu'at'bi          | to lower
+la'at'bi          | to bring towards, to bring near to
+si'la'at'bi       | to go towards, to approach
 Pe'at'bi          | to raise up
 At'at'bi          | to enter into or contain
 At'bi             | to go to
@@ -189,6 +216,7 @@ no'tsh'ke'kar'bi  | to build or combine something into a larger whole
 no'tsh'ke'kar'si'bi | To be built or combined into a larger whole, to be part of a larger whole
 aso'no'tsh'bi     | to bind or trap
 aso'no'tsh'si'bi  | to be bound or trapped
+Ru'rah'bi         | to use, to do something with, to accomplish by means of
 
 Adjective        | Meaning
 -----------------|--------
@@ -279,4 +307,6 @@ For the first section, we split as follows:
 
 If there are adjectives, like if it was an "eternal" task, you'd place it before the noun, so "Aso O'A'ke'kar'ki" or "the eternal great task of the spirit".
 
-Important names are often formed with the honorific "A'" prefix, or delimited with '..', for example "The honoured nadi" will be either "A'nadi" or "..nadi.." depending on the context.
+Important names are often formed with the honorific "A'" prefix, or delimited with '::', for example "The honoured nadi" will be either "A'nadi" or ":nadi:" depending on the context.
+
+The ":" has a visual resemblance to the sentence boundary symbol, or double word boundary, so ":" is simply a wider delimiter around the name

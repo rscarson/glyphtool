@@ -52,12 +52,14 @@ impl Bitmap {
         let (dst_width, dst_height) = self.size();
 
         if y > dst_height || y + src_height > dst_height {
-            eprintln!("Bitmap::paste: Y out of bounds ({x}, {y})");
+            eprintln!(
+                "Bitmap::paste: Y out of bounds ({x}, {y}) -> {y}+{src_height} > {dst_height}"
+            );
             eprintln!("{src}");
             return;
         }
         if x > dst_width || x + src_width > dst_width {
-            eprintln!("Bitmap::paste: X out of bounds ({x}, {y})");
+            eprintln!("Bitmap::paste: X out of bounds ({x}, {y}) -> {x}+{src_width} > {dst_width}");
             eprintln!("{src}");
             return;
         }

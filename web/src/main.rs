@@ -4,7 +4,7 @@ use libglyphtool::{
     error::EtroisResult,
     lexer::{self, phonambulator::AlwaysAutoSource},
     postprocessor::OutputImage,
-    renderer::{bitmap::ToBitmap, GlyphBlockRenderer},
+    renderer::{bitmap::ToBitmap, GlyphBlockOptions, GlyphBlockRenderer},
 };
 use tokio::net::TcpListener;
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
@@ -48,7 +48,12 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
     };
 
     println!("Rendering... ");
-    let renderer = GlyphBlockRenderer::new(&block, body.margin as usize, body.equalize_heights);
+    let options = GlyphBlockOptions {
+        margin: body.margin as usize,
+        equalize_heights: body.equalize_heights,
+        include_stop: true,
+    };
+    let renderer = GlyphBlockRenderer::new(&block, options);
     let bitmap = renderer.to_bitmap();
     let mut image = OutputImage::new_grayscale(&bitmap);
 

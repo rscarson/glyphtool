@@ -3,8 +3,12 @@ use super::{
     GlyphStackRenderer,
 };
 use crate::{
-    glyphs::{special, AsGlyphs, Glyph},
+    glyphs::{
+        special::{self, WordStop},
+        AsGlyphs, Glyph,
+    },
     lexer::collections::Line,
+    renderer::render_trait::Renderer,
 };
 
 /// Renders a single row of glyphs, inserting word and sentence stops as needed
@@ -15,23 +19,45 @@ pub struct GlyphRowRenderer {
 }
 impl GlyphRowRenderer {
     /// Create a new row renderer
-    pub fn new(line: &Line, equalize_heights: bool) -> Self {
+    #[must_use]
+    pub fn new(line: &Line, equalize_heights: bool, include_stop: bool) -> Self {
         let mut stacks = vec![];
 
+        println!("Processing line: {line}");
+
         for sentence in line.sentences() {
-            for word in sentence.words() {
+            let words = sentence.words();
+            for word in words {
                 let glyphs = word.as_glyphs();
-                let items = glyphs.into_iter().map(GlyphStackRenderer::new);
+                let items = glyphs
+                    .into_iter()
+                    .map(|g| GlyphStackRenderer::new(g, equalize_heights));
 
                 stacks.extend(items);
-                stacks.push(GlyphStackRenderer::new(vec![special::WordStop.as_boxed()]));
+                stacks.push(GlyphStackRenderer::new(
+                    vec![special::WordStop.as_boxed()],
+                    equalize_heights,
+                ));
             }
-            stacks.pop(); // Remove the last word stop
+            if !words.is_empty() {
+                stacks.pop(); // Remove the last word stop
+            }
 
             // Add a sentence stop
-            stacks.push(GlyphStackRenderer::new(vec![
-                special::SentenceStop.as_boxed()
-            ]));
+            if include_stop {
+                if let Some(last) = stacks.last() {
+                    if let Some(last) = last.glyphs().last() {
+                        if last.pronounciation() == "." {
+                            continue;
+                        }
+                    }
+                }
+
+                stacks.push(GlyphStackRenderer::new(
+                    vec![special::SentenceStop.as_boxed()],
+                    equalize_heights,
+                ));
+            }
         }
 
         let mut width = 0;
@@ -42,13 +68,19 @@ impl GlyphRowRenderer {
             height = height.max(h);
         }
 
+        let min_height: usize = WordStop.min_size().1;
+        let height = height.max(min_height);
+
         if equalize_heights {
             for stack in &mut stacks {
                 stack.set_height(height);
             }
         }
 
-        width += (stacks.len() * 2) - 1;
+        if !stacks.is_empty() {
+            width += (stacks.len() * 2) - 1;
+        }
+
         Self {
             stacks,
             width,

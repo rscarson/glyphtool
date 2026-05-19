@@ -4,21 +4,36 @@ use super::{
 };
 use crate::lexer::collections::Text;
 
+/// Options for rendering a block of text
+#[derive(Debug, Clone, Copy)]
+pub struct GlyphBlockOptions {
+    /// The margin around the block, in pixels
+    pub margin: usize,
+
+    /// If true, all glyphs will be rendered with the same height, which is the height of the tallest glyph.
+    pub equalize_heights: bool,
+
+    /// If true, line stops will be included at the end of each line
+    pub include_stop: bool,
+}
+
 /// Renders an entire block of text, as a series of rows
 pub struct GlyphBlockRenderer {
-    margin: usize,
+    margin: (usize, usize),
     rows: Vec<GlyphRowRenderer>,
     width: usize,
     height: usize,
 }
 impl GlyphBlockRenderer {
+    const MAX_ASPECT_RATIO: f32 = 3.0;
+
     /// Create a new block renderer
     #[must_use]
-    pub fn new(text: &Text, margin: usize, equalize_heights: bool) -> Self {
+    pub fn new(text: &Text, options: GlyphBlockOptions) -> Self {
         let rows: Vec<GlyphRowRenderer> = text
             .lines()
             .iter()
-            .map(|line| GlyphRowRenderer::new(line, equalize_heights))
+            .map(|line| GlyphRowRenderer::new(line, options.equalize_heights, options.include_stop))
             .collect();
 
         let mut width = 0;
@@ -29,13 +44,22 @@ impl GlyphBlockRenderer {
             height += h;
         }
 
-        width += 2 * margin;
+        let (mut xmargin, ymargin) = (options.margin, options.margin);
+        let ratio = height as f32 / width as f32;
+        if ratio > Self::MAX_ASPECT_RATIO {
+            // So we need h/w = MAX_ASPECT_RATIO
+            // So w = h / MAX_ASPECT_RATIO
+            let new_w = (width as f32 / Self::MAX_ASPECT_RATIO) as usize;
+            xmargin = ((width - new_w) / 2).max(xmargin);
+        }
+
+        width += 2 * xmargin;
 
         let spacers = 8 * (rows.len() - 1);
-        height += spacers + 2 * margin;
+        height += spacers + 2 * ymargin;
 
         Self {
-            margin,
+            margin: (xmargin, ymargin),
             rows,
             width,
             height,
@@ -62,80 +86,15 @@ impl GlyphBlockRenderer {
 }
 impl ToBitmap for GlyphBlockRenderer {
     fn to_bitmap(&self) -> Bitmap {
-        let ratio = self.height as f32 / self.width as f32;
-        let columns = (ratio / 5.0).ceil() as usize;
-        let rows_per_column = self.rows.len() / columns;
-        let mut start = 0;
-        let mut cols = vec![];
-        let mut total = 0;
+        let (xmargin, ymargin) = self.margin;
 
-        if ratio <= 3.0 {
-            let img = Self::render_column(
-                &self.rows,
-                self.width - 2 * self.margin,
-                self.height - 2 * self.margin,
-            );
-            let mut bitmap = Bitmap::new(self.width, self.height);
-            bitmap.paste(&img, self.margin, self.margin);
-            return bitmap;
-        }
-
-        for _ in 0..columns {
-            let mut end = start + rows_per_column;
-            if end > self.rows.len() {
-                end = self.rows.len();
-            }
-
-            cols.push(&self.rows[start..end]);
-            start = end;
-            total += end - start;
-        }
-        if total < self.rows.len() {
-            cols.push(&self.rows[start..]);
-        }
-        if cols[cols.len() - 1].is_empty() {
-            cols.pop();
-        }
-
-        let mut width = 0;
-        let mut height = 0;
-        let mut widths = vec![];
-        let mut heights = vec![];
-        for col in &cols {
-            let w = col.iter().map(|r| r.size().0).max().unwrap_or(0);
-            widths.push(w);
-
-            let h = col.iter().map(|r| r.size().1).sum::<usize>() + 8 * (col.len() - 1);
-            heights.push(h);
-
-            height = height.max(h);
-            width += w;
-        }
-        width += 15 * (columns - 1) + 2 * self.margin;
-        height += 2 * self.margin;
-
-        //
-        // Build v-separator
-        let mut sep = vec![];
-        for _ in 0..(height - 2 * self.margin) {
-            sep.extend([px!(e 1), px!(f 3, 192), px!(e 1), px!(nl)]);
-        }
-        sep.pop();
-
-        //
-        // Render final image
-        let mut bitmap = Bitmap::new(width, height);
-        let mut x = self.margin;
-        for (i, col) in cols.iter().enumerate() {
-            if i != 0 {
-                bitmap.paste(&sep.to_bitmap(), x + 3, self.margin);
-                x += 11;
-            }
-
-            let col_bitmap = Self::render_column(col, widths[i], heights[i]);
-            bitmap.paste(&col_bitmap, x, self.margin);
-            x += widths[i];
-        }
+        let img = Self::render_column(
+            &self.rows,
+            self.width - 2 * xmargin,
+            self.height - 2 * ymargin,
+        );
+        let mut bitmap = Bitmap::new(self.width, self.height);
+        bitmap.paste(&img, xmargin, ymargin);
 
         bitmap
     }
