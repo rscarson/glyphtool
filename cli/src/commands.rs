@@ -120,6 +120,7 @@ impl Commands {
                     margin: 0,
                     equalize_heights: !*no_equalize_heights,
                     include_stop: false,
+                    include_translation: false,
                 };
 
                 println!("{text}");

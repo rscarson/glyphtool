@@ -60,25 +60,33 @@ impl std::fmt::Display for Sentence {
 }
 
 /// Represents a set of sentences to be printed on a single line
+///
+/// Can optionally have a source text line associated with it, which is used for rendering and ignored otherwise
 #[derive(Debug, PartialEq)]
-pub struct Line(Vec<Sentence>);
+pub struct Line(Vec<Sentence>, Option<String>);
 impl Line {
     /// Build a line from a slice of tokens (presumably bounded by a line boundary)
     #[must_use]
-    pub fn from_tokens(tokens: &[Token]) -> Self {
+    pub fn from_tokens(tokens: &[Token], source_text: Option<String>) -> Self {
         let mut sentences = vec![];
         for tokens in tokens.split(|t| matches!(t, Token::SentenceBoundary)) {
             let sentence = Sentence::from_tokens(tokens);
             sentences.push(sentence);
         }
 
-        Self(sentences)
+        Self(sentences, source_text)
     }
 
     /// Get the sentences in the line
     #[must_use]
     pub fn sentences(&self) -> &[Sentence] {
         &self.0
+    }
+
+    /// Get the source text line associated with this line, if any
+    #[must_use]
+    pub fn source_text(&self) -> Option<&str> {
+        self.1.as_deref()
     }
 }
 impl std::fmt::Display for Line {
@@ -99,6 +107,7 @@ impl std::fmt::Display for Line {
 }
 
 /// Represents a set of lines to be printed in a single block of text
+/// Each line may optionally have a source text line associated with it, which is used for rendering and ignored otherwise
 #[derive(Debug, PartialEq)]
 pub struct Text(Vec<Line>);
 impl Text {
@@ -106,10 +115,23 @@ impl Text {
     #[must_use]
     pub fn from_tokens(tokens: &[Token]) -> Self {
         let mut lines = vec![];
-        for part in tokens.split(|t| matches!(t, Token::LineBoundary)) {
-            let line = Line::from_tokens(part);
-            lines.push(line);
+        let mut source_line_buffer = vec![];
+        let mut boundary_index = 0;
+
+        for (i, token) in tokens.iter().enumerate() {
+            if let Token::LineBoundary = token {
+                let source = source_line_buffer.pop();
+                let line = Line::from_tokens(&tokens[boundary_index..i], source);
+                lines.push(line);
+                boundary_index = i + 1;
+            } else if let Token::SourceTextLine(s) = token {
+                source_line_buffer.insert(0, s.clone());
+            }
         }
+
+        let source = source_line_buffer.pop();
+        let line = Line::from_tokens(&tokens[boundary_index..], source);
+        lines.push(line);
 
         Self(lines)
     }
@@ -153,15 +175,18 @@ mod test {
 
         assert_eq!(
             text,
-            Text(vec![Line(vec![
-                Sentence(vec![WordKind::PhonemeGroup(vec!["E'sword".to_string()])]),
-                Sentence(vec![WordKind::PhonemeGroup(vec!["E'word".to_string()])]),
-                Sentence(vec![WordKind::PhonemeGroup(vec!["O'son'mark".to_string()])]),
-                Sentence(vec![
-                    WordKind::Number(2),
-                    WordKind::PhonemeGroup(vec!["potato".to_string()])
-                ]),
-            ]),])
+            Text(vec![Line(
+                vec![
+                    Sentence(vec![WordKind::PhonemeGroup(vec!["E'sword".to_string()])]),
+                    Sentence(vec![WordKind::PhonemeGroup(vec!["E'word".to_string()])]),
+                    Sentence(vec![WordKind::PhonemeGroup(vec!["O'son'mark".to_string()])]),
+                    Sentence(vec![
+                        WordKind::Number(2),
+                        WordKind::PhonemeGroup(vec!["potato".to_string()])
+                    ]),
+                ],
+                None
+            )])
         );
     }
 }

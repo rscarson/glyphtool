@@ -233,3 +233,27 @@ impl_renderer!(
     vstretch = [2],
     hstretch = []
 );
+
+glyph!(Cartouche => "|", "
+    Also the stop for a sentence boundary
+    ```text
+    █  █
+
+
+    █  █
+    ```
+");
+#[rustfmt::skip]
+impl_renderer!(
+  Cartouche,
+    glyph = [
+        [0, 0, 0, 0],
+        [1, 0, 0, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [1, 0, 0, 1],
+        [0, 0, 0, 0],
+    ],
+    vstretch = [2],
+    hstretch = []
+);

@@ -29,10 +29,12 @@ macro_rules! glyph {
     };
 }
 
+pub mod ascii;
 pub mod consonants;
+pub mod ipa;
 pub mod numeric;
 pub mod special;
 pub mod vowels;
 
 mod encoder;
-pub use encoder::{AsGlyphs, EncodingTable, ENCODING_TABLE};
+pub use encoder::{AsGlyphs, ENCODING_TABLE, EncodingTable};

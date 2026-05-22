@@ -3,38 +3,76 @@
 For a visual guide, see symbol_guide.png
 
 ## Vowels
-O, as in "go" or "so"
-A, as in "apple" or "cat"
-AH, as in "father" or "car"
-UH, as in "putt" or "rub"
-U, as in "blue" or "true"
-E, as in "bed" or "red"
-I, as in "clean" or "ice"
+
+   | examples    | IPA
+---| ----------- | ---
+o  | go, so      | /o/
+u  | blue, true  | /u/
+uh | putt, rub   | /ʌ/
+ah | father, car | /ɑ/
+a  | apple, cat  | /a/
+e  | bed, red    | /e/
+i  | clean, seat | /i/
 
 ## Consonants
-Consonants are categorized into two groups. Closed consonants require closing the lips, while open consonants do not.
-- Closed Consonants: [m] [p] [b] [f]
-- Open Consonants: [t] [r] [l] [s] [sh] [th] [n] [ng] [k] [d] [z]
+Consonants are categorised into two groups. 
+Closed consonants require touching the lips or teeth together, while open consonants do not.
 
-Some sounds are compounds or do not exist independently, such as:
-- "j" in "judge" (d-sh)
-- "ch" in "chase" (t-sh)
-- "v" in "victory" (f)
-- "g" in "go" (k)
+### Closed Consonants
+[m] [p] [b] [f]
+
+  | examples    | IPA
+--| ----------- | ---
+m | man, moon   | /m/
+p | pen, stop   | /p/
+b | bad, cab    | /b/
+f | fun, leaf   | /f/
+
+### Open Consonants
+[t] [r] [l] [s] [sh] [th] [n] [ng] [k] [d] [z]
+
+R's are rolled (/r/)
+
+  | examples     | IPA
+--| ------------ | ---
+t | top, tell    | /t/
+r | run, car     | /r/
+l | let, bell    | /l/
+s | sun, pass    | /s/
+sh| ship, push   | /ʃ/
+th| father, that | /ð/
+n | no, sun      | /n/
+ng| sing, long   | /ŋ/
+k | cat, back    | /k/
+d | dog, bed     | /d/
+z | zoo, buzz    | /z/
+
+### Other Sounds
+Some sounds are compounds or do not exist independently, but could be phonologically represented
+
+    | examples     | Replacement | IPA
+----| ------------ | ----------- | ---
+j   | judge, edge  | d-sh        | /dʃ/
+ch  | chase, match | t-sh        | /tʃ/
+v   | victory, love| f           | /f/
+g   | go, big      | k           | /k/
+uhr | father, fur  | uh-r        | /ʊr/
 
 ## Special Characters
+In the Latin representation, the apostrophe (') is used as a syllable break, and also to denote special prefixes. 
+It is not pronounced as a separate sound
 
-The apostrophe (') is used to split the syllables of a word, or divide a compound word.
-For example, "apple" becomes "a'puhl". An example in E'Trois is "Si'rah", or "Sentient Being", literally "self-person"
+There are also 3 special prefixes that can be added to words to change their meaning.
 
-There are also 3 special prefixes that can be added to words to change their meaning:
-- E' (Deific Mark): Indicates a divine or godly aspect. For example, "E'Ki" could mean "Divine Energy" or "Spirit of the Gods".
-    - It is pronounced as "yeh", so "E'Ki" would be pronounced as "yeh-ki", and "E'Aso" would be pronounced as "ya-so".
-- O' (Possessive Mark): Indicates possession or association. For example, "O'Ki" could mean "of the Energy" or "belonging to the Spirit".
-    - It is pronounced as "heh", so "O'Ki" would be pronounced as "heh-ki", and "O'Aso" would be pronounced as "ha-so".
-    - This is most often used in compound words denoting ownership or association, for example "O'Ki'rah", or "the person's energy"
-- A' (Honorific Mark): Indicates respect or honor, often in the context of a title or name. For example "A'One" is a person named in honour of "One"
-    - It is pronounced as "weh", so "A'One" would be pronounced as "wo-ne".
+All 3 follow the same rules for pronunciation:
+- If the modifier appears before a consonant, it is pronounced as a separate syllable with the vowel "e", so "E'Ki" is pronounced "yeh-ki", and "O'Ki" is pronounced "heh-ki"
+- If the modifier appears before a vowel, the vowel is pronounced with the modified sound, so "A'One" is pronounced "wo-ne", and "E'One" is pronounced "yo-ne"
+
+   | Name            | Meaning                                                                                                                        | Pronunciation | IPA
+---|-----------------|--------------------------------------------------------------------------------------------------------------------------------|---------------|------------
+E' | Deific Mark     | Indicates a divine or godly aspect. For example, "E'Ki" could mean "Divine Energy" or "Spirit of the Gods".                    | yeh           | /je/ or /j/
+O' | Possessive Mark | Indicates possession or association. For example, "O'Ki'rah", or "the person's energy".                                        | heh           | /he/ or /h/
+A' | Honorific Mark  | Indicates respect or honor, often in the context of a title or name. For example "A'One" is a person named in honour of "One". | weh           | /we/ or /w/
 
 # Numerals
 
@@ -82,7 +120,7 @@ The language is similar to esperanto in that it is made up of root words that ca
 Noun         | Meaning
 -------------|--------
 Ki           | Energy, spirit
-Toah         | death, change, destruction, renewal
+Toah         | change, destruction
 Aso          | Immortality, moral, physical, body
 Rah          | people, moral, physical, body
 Re           | champion
@@ -134,13 +172,14 @@ Word              | Meaning
 ------------------|--------
 kar'duh           | commanded or ruled thing/place/person
 pi'tsh            | time section, era
-no'tsh            | to combine, to unite, to connect
-no'tsh'ke'kar     | To build or combine
+no'tsh            | combined, united, connected
+tsh'ke'kar        | divided, separated, cut
+no'tsh'ke'kar     | built or combined
 Ko'ato            | blood
 Duh're            | leader, ruler, commander
 Aso'toah          | Balance, Chaos
 Ko'ato'rah        | heart
-tel'la'si         | prophet, seer, witness, "one who foresees"
+la'tel'si         | prophet, seer, witness, "one who foresees"
 Toah'fel          | death. Ending
 Ato'ki            | tears (crying)
 Rah'ki            | life
@@ -148,6 +187,8 @@ Ko'rah            | metal (general)
 Aso'tsh'ko'rah    | metal chain, object
 Tsh'fel'rah'kar   | slicing weapon, sword
 A'ato             | sea
+no'kar            | loss
+dal'no'kar        | giving
 No'si             | you
 Dal'bah           | blessed, gifted, granted
 Si'ruh            | name
@@ -164,6 +205,7 @@ Nu'si'kar         | confused
 At'at'sir         | home
 No'pe'nu          | equal
 E'rah             | demon
+si'rah'dal        | love for sentient beings, compassion
 Si'rah            | mankind, sentient life
 La'si'rah         | child
 Ti'si'rah         | ancestor
@@ -171,6 +213,9 @@ stahr'si'rah      | Outsider, stranger, external force
 Aso'toah          | Chaos
 O'Aso'toah'ki     | The Primordial Spirit of Chaos
 Aso're            | Champion of Immortals
+aso'rah           | Stability / order / continuity
+toah'rah          | Renewal / change / growth / transformation
+toah'ke'kar       | Disaster
 Ke'tel            | The ability to see or witness something, also used as a verb "I can see" or "I can witness"
 aso'pi            | eternal / timeless / forever
 aso'ti            | physically infinite distance or size
@@ -184,11 +229,16 @@ ru'kar            | with, having
 Ru'tahn           | therefore, such that
 Ru'et             | just as, just like
 Ru'bi             | which are / is
-Ru'no             | however
+Ru'no             | however /but
 Ru'rah            | using / because of
+ru'duh            | in order to / for the purpose of
 
 Verb              | Meaning
 ------------------|--------
+dal'no'kar'bi     | to give / gives
+dal'no'kar'si'bi  | to receive, to be given
+no'kar'bi         | to lose / loses
+Ke'tel'bi         | to be able to see or witness something / can see or witness
 Bi'la             | to become
 bi'ti             | to have been, to have done, was to be, was to have done
 Toah'bi           | to change/alter/destroy
@@ -208,11 +258,15 @@ Nu'bi             | to remove
 Aso'kar           | to be bound to, fated to, unable to be free of
 Ruh'kar           | to follow a steady path, to be true to your purpose
 Si'kar            | to think
+Si'ruh'bi         | to name, to give a name to
+Si'ruh'kar        | to be named
 Ki'kar            | to wake up, to awaken
-Tel'la            | to foresee, to predict
+la'tel            | to foresee, to predict
 ti'bi             | to have been, to have done, was to be, was to have done
 Aso'bi            | to keep, to maintain in a certain state, to preserve
 no'tsh'ke'kar'bi  | to build or combine something into a larger whole
+aso'tsh'ko'rah'si'bi | To be chained or trapped by something physical
+aso'tsh'ko'rah'bi | To chain or trap with something physical
 no'tsh'ke'kar'si'bi | To be built or combined into a larger whole, to be part of a larger whole
 aso'no'tsh'bi     | to bind or trap
 aso'no'tsh'si'bi  | to be bound or trapped

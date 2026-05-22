@@ -92,6 +92,14 @@ impl TokensExt for Vec<Token> {
                 Token::Comment => (),
 
                 //
+                // Source text line
+                Token::SourceTextLine(s) => tokens.push(Token::SourceTextLine(s)),
+
+                //
+                // Cartouche inside the word
+                Token::Cartouche => compound_word.push('|'),
+
+                //
                 // Continuation of the current word
                 Token::Word(word) => {
                     let word = preprocess_word(&word);

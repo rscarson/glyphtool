@@ -15,6 +15,9 @@ pub struct GlyphBlockOptions {
 
     /// If true, line stops will be included at the end of each line
     pub include_stop: bool,
+
+    /// If true, the source text will be rendered in ascii next to each line
+    pub include_translation: bool,
 }
 
 /// Renders an entire block of text, as a series of rows
@@ -33,7 +36,7 @@ impl GlyphBlockRenderer {
         let rows: Vec<GlyphRowRenderer> = text
             .lines()
             .iter()
-            .map(|line| GlyphRowRenderer::new(line, options.equalize_heights, options.include_stop))
+            .map(|line| GlyphRowRenderer::new(line, options))
             .collect();
 
         let mut width = 0;

@@ -52,6 +52,7 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
         margin: body.margin as usize,
         equalize_heights: body.equalize_heights,
         include_stop: true,
+        include_translation: false,
     };
     let renderer = GlyphBlockRenderer::new(&block, options);
     let bitmap = renderer.to_bitmap();

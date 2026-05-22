@@ -61,6 +61,10 @@ pub struct Render {
     #[arg(long)]
     skip_translation: bool,
 
+    /// If true, the source text will be rendered in ascii next to each line
+    #[arg(long)]
+    include_translation: bool,
+
     /// If provided, the output will be opened in the default image viewer
     #[arg(short, long)]
     open: bool,
@@ -99,7 +103,10 @@ impl Render {
             margin: self.margin,
             equalize_heights: !self.no_equalize_heights,
             include_stop: !self.no_line_stops,
+            include_translation: self.include_translation,
         };
+
+        println!("Creating layout...");
         let renderer = GlyphBlockRenderer::new(&block, options);
 
         println!("Rendering image...");

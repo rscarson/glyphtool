@@ -186,6 +186,7 @@ pub const ENCODING_TABLE: &[&dyn Glyph] = &[
     &special::Spacer,
     &special::WordStop,
     &special::SentenceStop,
+    &special::Cartouche,
     &special::Deific,
     &special::Posessive,
     &special::Honourific,

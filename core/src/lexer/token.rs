@@ -33,12 +33,22 @@ pub enum Token {
     LineBoundary,
 
     /// A comment
-    #[regex(r"(#|//|>).*(\n\r|\r\n|[\r\n])?")]
+    #[regex(r"(#|//).*(\n\r|\r\n|[\r\n])?")]
     Comment,
+
+    /// A line describing the content of the next non comment/source line, for use in rendering
+    #[regex(r"> .*(\n\r|\r\n|[\r\n])?", |lex| {
+        lex.slice().trim_start_matches('>').trim().to_string()
+    })]
+    SourceTextLine(String),
 
     /// End of sentence punctuation
     #[regex("[.,;:!?] *")]
     SentenceBoundary,
+
+    /// It's just : again but used for cartouches.
+    #[regex(r"|")]
+    Cartouche,
 }
 
 #[cfg(test)]

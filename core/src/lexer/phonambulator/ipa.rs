@@ -98,78 +98,174 @@ impl PhonemeExt for &str {
     }
 }
 
+#[derive(Debug, PartialEq)]
+enum IpaItem {
+    Word(Vec<String>),
+    Space,
+    Newline,
+    SentenceBoundary,
+}
+
 /// Convert a string of IPA characters to a string of phonemes
+#[allow(clippy::too_many_lines, reason = "ok yeah but shuddup tho")]
 #[must_use]
 pub fn glyphs_to_ipa(input: &str) -> String {
     let mut input = input;
-    let mut output = String::new();
+    let mut items = vec![];
+    let mut current_syllable = String::new();
+    let mut current_word = vec![];
+
     while !input.is_empty() {
         let mut found = false;
         for (chars, replacement) in PHONEME_REPLACEMENT_TABLE {
             if replacement.is_empty() {
                 continue;
             }
+
             if let Some(rest) = input.strip_prefix(replacement) {
-                output.push(chars[0]);
+                current_syllable.push(chars[0]);
                 input = rest;
                 found = true;
                 break;
             }
         }
 
-        if input.starts_with('\'') {
-            output.push('.');
-            input = &input[1..];
-            found = true;
-        } else if input.starts_with(['?', '!', '.']) {
-            output.push_str("||");
-            input = &input[1..];
-            found = true;
-        } else if input.starts_with(' ') {
-            output.push(' ');
-            input = &input[1..];
-            found = true;
-        } else if input.starts_with(['\n', '\r']) {
-            output.push('\n');
-            input = &input[1..];
-            found = true;
-        } else if input.chars().next().unwrap_or_default().is_numeric() {
-            output.push_str(&input[..1]);
-            input = &input[1..];
-            found = true;
-        } else if let Some(rest) = input.strip_prefix("A'") {
-            output.push('w');
+        let next = input.chars().next().unwrap_or_default();
+        match next {
+            ' ' => {
+                if !current_syllable.is_empty() {
+                    current_word.push(current_syllable);
+                    current_syllable = String::new();
+                }
+
+                if !current_word.is_empty() {
+                    items.push(IpaItem::Word(current_word));
+                    current_word = vec![];
+                }
+
+                input = &input[1..];
+                items.push(IpaItem::Space);
+                found = true;
+            }
+
+            '\'' => {
+                current_word.push(current_syllable);
+                current_syllable = String::new();
+                input = &input[1..];
+                found = true;
+            }
+
+            '\n' | '\r' => {
+                if !current_syllable.is_empty() {
+                    current_word.push(current_syllable);
+                    current_syllable = String::new();
+                }
+
+                if !current_word.is_empty() {
+                    items.push(IpaItem::Word(current_word));
+                    current_word = vec![];
+                }
+
+                items.push(IpaItem::Newline);
+                input = &input[1..];
+                found = true;
+            }
+
+            '.' | '!' | '?' => {
+                if !current_syllable.is_empty() {
+                    current_word.push(current_syllable);
+                    current_syllable = String::new();
+                }
+
+                if !current_word.is_empty() {
+                    items.push(IpaItem::Word(current_word));
+                    current_word = vec![];
+                }
+
+                items.push(IpaItem::SentenceBoundary);
+                input = &input[1..];
+                found = true;
+            }
+
+            x if x.is_numeric() => {
+                current_syllable.push(x);
+                input = &input[1..];
+                found = true;
+            }
+
+            _ => (),
+        }
+
+        if let Some(rest) = input.strip_prefix("A'") {
+            current_syllable.push('w');
 
             if !rest.starts_with(['a', 'e', 'i', 'o', 'u']) {
-                output.push('e');
+                current_syllable.push('e');
+                current_word.push(current_syllable);
+                current_syllable = String::new();
             }
 
             input = rest;
             found = true;
         } else if let Some(rest) = input.strip_prefix("E'") {
-            output.push('j');
+            current_syllable.push('j');
 
             if !rest.starts_with(['a', 'e', 'i', 'o', 'u']) {
-                output.push('e');
+                current_syllable.push('e');
+                current_word.push(current_syllable);
+                current_syllable = String::new();
             }
 
             input = rest;
             found = true;
         } else if let Some(rest) = input.strip_prefix("O'") {
-            output.push('h');
+            current_syllable.push('h');
 
             if !rest.starts_with(['a', 'e', 'i', 'o', 'u']) {
-                output.push('e');
+                current_syllable.push('e');
+                current_word.push(current_syllable);
+                current_syllable = String::new();
             }
 
             input = rest;
             found = true;
         }
 
+        if input.is_empty() {
+            current_word.push(current_syllable);
+            items.push(IpaItem::Word(current_word));
+            items.push(IpaItem::SentenceBoundary);
+            break;
+        }
+
         if !found {
-            eprintln!("No replacement found for phoneme: {input}");
+            eprintln!(
+                "No replacement found for phoneme: {}",
+                input.chars().next().unwrap_or_default()
+            );
             input = &input[1..];
-            output += "?";
+            current_syllable += "?";
+        }
+    }
+
+    let mut output = String::new();
+    for item in items {
+        match item {
+            IpaItem::Word(mut syllables) => {
+                let last = syllables.pop().unwrap_or_default();
+                let mut word = syllables.join(".");
+                if !syllables.is_empty() {
+                    word.push_str(".ˈ");
+                }
+                word.push_str(&last);
+                output.push('/');
+                output.push_str(&word);
+                output.push('/');
+            }
+
+            IpaItem::Space => output.push(' '),
+            IpaItem::Newline => output.push('\n'),
+            IpaItem::SentenceBoundary => output.push('.'),
         }
     }
 
@@ -179,12 +275,12 @@ pub fn glyphs_to_ipa(input: &str) -> String {
 const PHONEME_REPLACEMENT_TABLE: &[(&[char], &str)] = &[
     //
     // Vowels
-    (&['ɔ', 'ɑ', 'ə', 'ɐ'], "ah"),
+    (&['ɑ', 'ɔ', 'ə', 'ɐ'], "ah"),
     (&['a', 'æ'], "a"),
     (&['e', 'ɛ', 'ᵻ'], "e"),
     (&['i', 'ɪ', 'j'], "i"),
     (&['o'], "o"),
-    (&['ʊ', 'ʌ'], "uh"),
+    (&['ʌ', 'ʊ'], "uh"),
     (&['u', 'w'], "u"),
     //
     // Open consonants
