@@ -260,7 +260,7 @@ impl Command {
                 verbose,
                 db,
             } => {
-                let Ok(mut job) = manager::jobs_from_json_file(job_path) else {
+                let Ok(mut job) = manager::jobs_from_file(job_path) else {
                     eprintln!("Failed to load job from {job_path}");
                     return Ok(());
                 };

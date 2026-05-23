@@ -120,12 +120,18 @@ impl Text {
 
         for (i, token) in tokens.iter().enumerate() {
             if let Token::LineBoundary = token {
-                let source = source_line_buffer.pop();
-                let line = Line::from_tokens(&tokens[boundary_index..i], source);
+                let tokens = &tokens[boundary_index..i];
+                let source = if tokens.is_empty() {
+                    None
+                } else {
+                    source_line_buffer.pop()
+                };
+                let line = Line::from_tokens(tokens, source);
                 lines.push(line);
                 boundary_index = i + 1;
             } else if let Token::SourceTextLine(s) = token {
                 source_line_buffer.insert(0, s.clone());
+                boundary_index += 1; // Account for the fact that the source text line is not included in the line tokens
             }
         }
 

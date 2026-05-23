@@ -115,6 +115,11 @@ pub fn glyphs_to_ipa(input: &str) -> String {
     let mut current_syllable = String::new();
     let mut current_word = vec![];
 
+    input = input.trim();
+    if input.is_empty() {
+        return String::new();
+    }
+
     while !input.is_empty() {
         let mut found = false;
         for (chars, replacement) in PHONEME_REPLACEMENT_TABLE {
@@ -132,6 +137,11 @@ pub fn glyphs_to_ipa(input: &str) -> String {
 
         let next = input.chars().next().unwrap_or_default();
         match next {
+            '|' => {
+                input = &input[1..];
+                found = true;
+            }
+
             ' ' => {
                 if !current_syllable.is_empty() {
                     current_word.push(current_syllable);

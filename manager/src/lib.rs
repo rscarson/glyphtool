@@ -550,10 +550,25 @@ pub fn jobs_from_json(json: &str) -> Result<Jobs, serde_json::Error> {
     Ok(jobs)
 }
 
-/// Helper function to read jobs from a JSON file
-pub fn jobs_from_json_file(path: &str) -> Result<Jobs, Box<dyn std::error::Error>> {
+/// Helper function to read jobs from a YAML string
+pub fn jobs_from_yaml(yaml: &str) -> Result<Jobs, serde_yaml::Error> {
+    let jobs = serde_yaml::from_str(yaml)?;
+    Ok(jobs)
+}
+
+/// Helper function to read jobs from a JSON or YAML file
+pub fn jobs_from_file(path: &str) -> Result<Jobs, Box<dyn std::error::Error>> {
     let json = std::fs::read_to_string(path)?;
-    let mut jobs = jobs_from_json(&json)?;
+    let ext = std::path::Path::new(path)
+        .extension()
+        .and_then(|x| x.to_str())
+        .unwrap_or("")
+        .to_lowercase();
+    let mut jobs = match ext.as_str() {
+        "json" => jobs_from_json(&json)?,
+        "yaml" | "yml" => jobs_from_yaml(&json)?,
+        _ => Err(std::io::Error::other("Unsupported Filetype"))?,
+    };
 
     // Set the *_dir fields to the parent directory of the job file if they are not already set
     // and make the existing paths relative to the job file directory if set and not absolute

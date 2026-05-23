@@ -46,16 +46,22 @@ impl GlyphRowRenderer {
             let words = sentence.words();
             for word in words {
                 let glyphs = word.as_glyphs();
+                let last_glyph_is_cartouche = glyphs
+                    .last()
+                    .and_then(|stack| stack.last())
+                    .is_some_and(|g| g.pronounciation() == "|");
 
                 let items = glyphs
                     .into_iter()
                     .map(|g| GlyphStackRenderer::new(g, options.equalize_heights));
 
                 stacks.extend(items);
-                stacks.push(GlyphStackRenderer::new(
-                    vec![special::WordStop.as_boxed()],
-                    options.equalize_heights,
-                ));
+                if !last_glyph_is_cartouche {
+                    stacks.push(GlyphStackRenderer::new(
+                        vec![special::WordStop.as_boxed()],
+                        options.equalize_heights,
+                    ));
+                }
             }
             if !words.is_empty() {
                 stacks.pop(); // Remove the last word stop

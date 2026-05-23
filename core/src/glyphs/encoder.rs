@@ -117,6 +117,21 @@ impl AsGlyphs for WordKind {
                     let mut glyphs = vec![];
 
                     while !phonemes.is_empty() {
+                        if phonemes.starts_with('|') {
+                            phonemes = &phonemes[1..];
+
+                            // End the current vowel stack
+                            if !glyphs.is_empty() {
+                                stacks.push(glyphs);
+                                glyphs = vec![];
+                            }
+
+                            // Add a vowel stack containing just the cartouche glyph
+                            stacks.push(vec![special::Cartouche.as_boxed()]);
+
+                            continue;
+                        }
+
                         if phonemes.starts_with('\'') {
                             phonemes = &phonemes[1..];
 

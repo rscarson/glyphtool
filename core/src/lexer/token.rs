@@ -46,8 +46,8 @@ pub enum Token {
     #[regex("[.,;:!?] *")]
     SentenceBoundary,
 
-    /// It's just : again but used for cartouches.
-    #[regex(r"|")]
+    /// It's just :: again but used for cartouches.
+    #[regex(r"\|")]
     Cartouche,
 }
 

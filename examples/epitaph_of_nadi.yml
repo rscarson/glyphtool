@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/rscarson/glyphtool/refs/heads/master/manager/jobs.schema.json
+#
+# Epitaph of Nadi, the sorcerer king and prophet of the 1st age of immortals.
+# Render this using
+# cargo run job examples/epitaph_of_nadi.yml
+
+output_dir: "out"
+jobs:
+  - source:
+      type: "text"
+      value: |
+        > Nadi, who was the sorcerer king, prophet of the 1st age of immortals
+        > Nadi who wielded the magic of storm
+        > Nadi who was First of the council of E'Lne
+        > Nadi who built legions
+        > Nadi who unified pe'at'E'ato'ifo [the land above divine water]
+        > Nadi who is dead inside this place
+
+        |na'di| O'ne'duh're et ti'la O'la'tel'si'O'la'aso'rah ti'bi
+        |na'di| ti'at O'ne'pe'A'ato'ko ti'kar
+        |na'di| ti'la O'ruh'so'rah'E'lne ti'bi
+        |na'di| so'fel'ke'kar're ti'no'tsh'ke'kar
+        |na'di| pe'at'E'ato'ifo ti'no'tsh'ke'kar'bi
+        |na'di| at'at toah'bi
+    steps:
+    - type: "ipa"
+      destination: "nadi.ipa"
+    
+    - type: "render"
+      image_out_path: "epitaph_of_nadi.png"
+      render_translation: true
+      post_process_steps:
+        - type: "scale"
+          factor: 2
+        - type: "filter"
+          name: "granite"

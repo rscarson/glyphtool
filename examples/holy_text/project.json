@@ -1,4 +1,6 @@
 {
+	"$schema": "https://raw.githubusercontent.com/rscarson/glyphtool/refs/heads/master/manager/jobs.schema.json",
+
 	"source_dir": "source",
 	"output_dir": "out",
 
@@ -10,6 +12,11 @@
 			},
 			"steps": [
 				{
+					"type": "ipa",
+					"destination": "0_chaos.ipa"
+				},
+
+				{
 					"type": "render",
 					"image_out_path": "0_chaos.png",
 					"render_translation": true,
@@ -18,11 +25,6 @@
 							{ "type": "scale", "factor": 2 },
 							{ "type": "filter", "name": "sketch" }
 					]
-				},
-
-				{
-					"type": "ipa",
-					"destination": "0_chaos.ipa.txt"
 				}
 			]
 		}
