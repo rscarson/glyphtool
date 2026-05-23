@@ -37,7 +37,6 @@ impl GlyphRowRenderer {
         let ipa_text = if options.include_translation {
             let text = line.to_string();
             let text = glyphs_to_ipa(&text);
-            println!("{text}");
             Some(ipa::encode(&text))
         } else {
             None

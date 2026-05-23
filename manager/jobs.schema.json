@@ -1,0 +1,163 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EtroisPipelineConfiguration",
+  "description": "Configuration schema for the high etrois toolchain batch job runner.",
+  "type": "object",
+  "required": ["jobs"],
+  "properties": {
+    "source_dir": {
+      "type": "string",
+      "description": "Optional base directory for locating source files."
+    },
+    "output_dir": {
+      "type": "string",
+      "description": "Optional base directory for writing output files."
+    },
+    "db_path": {
+      "type": "string",
+      "description": "Optional path to the translation database."
+    },
+    "jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Job"
+      }
+    }
+  },
+  "definitions": {
+    "Job": {
+      "type": "object",
+      "required": ["source", "steps"],
+      "properties": {
+        "source": {
+          "$ref": "#/definitions/TextSource"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/JobStep"
+          }
+        }
+      }
+    },
+    "TextSource": {
+      "type": "object",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["text", "file"]
+        },
+        "value": {
+          "type": "string",
+          "description": "Inline text string if type is 'text', or file path string if type is 'file'."
+        }
+      }
+    },
+    "JobStep": {
+      "type": "object",
+      "required": ["type"],
+      "anyOf": [
+        {
+          "properties": {
+            "type": { "inverse_enum": ["phonetictranslation"], "type": "string", "enum": ["phonetictranslation"] },
+            "allow_stdin_input": {
+              "type": "boolean",
+              "default": true,
+              "description": "Prompt user for unmapped entries. Defaults to true."
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": { "type": "string", "enum": ["ipa"] },
+            "destination": {
+              "type": ["string", "null"],
+              "description": "File path to save the IPA format. Writes to standard output if null."
+            }
+          }
+        },
+        {
+          "required": ["image_out_path", "post_process_steps"],
+          "properties": {
+            "type": { "type": "string", "enum": ["render"] },
+            "image_out_path": {
+              "type": "string",
+              "description": "Output path for the generated image (.png or .webp)."
+            },
+            "margins": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 2,
+              "description": "Pixel padding size around the image blocks."
+            },
+            "equalize_stack_heights": {
+              "type": "boolean",
+              "default": true
+            },
+            "add_line_stops": {
+              "type": "boolean",
+              "default": true
+            },
+            "post_process_steps": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PostProcessStep"
+              }
+            },
+            "render_translation": {
+              "type": "boolean",
+              "default": false,
+              "description": "Prints underlying source text matching translation alignment."
+            }
+          }
+        },
+        {
+          "properties": {
+            "type": { "type": "string", "enum": ["renderascii"] },
+            "equalize_stack_heights": {
+              "type": "boolean",
+              "default": true
+            },
+            "add_line_stops": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      ]
+    },
+    "PostProcessStep": {
+      "type": "object",
+      "required": ["type"],
+      "anyOf": [
+        {
+          "required": ["name"],
+          "properties": {
+            "type": { "type": "string", "enum": ["filter"] },
+            "name": {
+              "type": "string",
+              "enum": ["sketch", "space", "granite"]
+            },
+            "strength": {
+              "type": "number",
+              "default": 1.0,
+              "description": "Filter operational modifier scale parameter."
+            }
+          }
+        },
+        {
+          "required": ["factor"],
+          "properties": {
+            "type": { "type": "string", "enum": ["scale"] },
+            "factor": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Multiplier scaling width and height dimensions."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

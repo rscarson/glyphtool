@@ -1,6 +1,6 @@
 //! Postprocessor module for image processing
 use image::{
-    codecs::png::PngEncoder, imageops::filter3x3, DynamicImage, GrayImage, ImageEncoder, RgbImage,
+    DynamicImage, GrayImage, ImageEncoder, RgbImage, codecs::png::PngEncoder, imageops::filter3x3,
 };
 use rayon::iter::ParallelIterator;
 use std::path::Path;
@@ -177,26 +177,31 @@ impl OutputImage {
     }
 
     /// Apply a filter to the image (sketchbook look)
-    pub fn filter_sketch(&mut self, strength: f32) {
-        self.apply_filter(filters::sketch, strength);
+    pub fn filter_sketch(&mut self, strength: f32, verbose: bool) {
+        self.apply_filter(filters::sketch, strength, verbose);
     }
 
     /// Apply a filter to the image (space look)
-    pub fn filter_space(&mut self, strength: f32) {
-        self.apply_filter(filters::space, strength);
+    pub fn filter_space(&mut self, strength: f32, verbose: bool) {
+        self.apply_filter(filters::space, strength, verbose);
     }
 
     /// Apply a filter to the image (granite look)
-    pub fn filter_granite(&mut self, strength: f32) {
-        self.apply_filter(filters::granite, strength);
+    pub fn filter_granite(&mut self, strength: f32, verbose: bool) {
+        self.apply_filter(filters::granite, strength, verbose);
     }
 
     /// Apply a custom filter to the image
-    pub fn apply_filter<F: Fn(&mut RgbImage, f32)>(&mut self, f: F, strength: f32) {
+    pub fn apply_filter<F: Fn(&mut RgbImage, f32, bool)>(
+        &mut self,
+        f: F,
+        strength: f32,
+        verbose: bool,
+    ) {
         self.convert_to_rgb();
         match self {
             Self::Rgb(img) => {
-                f(img, strength);
+                f(img, strength, verbose);
             }
             Self::Grayscale(_) => unreachable!(),
         }

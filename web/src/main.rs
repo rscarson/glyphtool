@@ -66,9 +66,9 @@ async fn render(Json(body): Json<RenderRequest>) -> Json<RenderResponse> {
 
     println!("Filtering... ");
     match body.filter.as_deref() {
-        Some("sketch") => image.filter_sketch(1.0),
-        Some("space") => image.filter_space(1.0),
-        Some("granite") => image.filter_granite(1.0),
+        Some("sketch") => image.filter_sketch(1.0, false),
+        Some("space") => image.filter_space(1.0, false),
+        Some("granite") => image.filter_granite(1.0, false),
         _ => {}
     }
 

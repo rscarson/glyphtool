@@ -1,5 +1,5 @@
 use clap::Subcommand;
-use libglyphtool::{error::EtroisResult, postprocessor::OutputImage};
+use manager::core::{error::EtroisResult, postprocessor::OutputImage};
 
 #[derive(Debug, clap::Parser)]
 pub struct Image {
@@ -26,6 +26,10 @@ pub enum Command {
 
         #[clap(long, default_value = "1.0")]
         strength: f32,
+
+        /// If true, the filter will print verbose output about its steps
+        #[clap(long, short, default_value_t = false)]
+        verbose: bool,
     },
 }
 impl Command {
@@ -37,11 +41,14 @@ impl Command {
             }
 
             Self::Filter {
-                filter, strength, ..
+                filter,
+                strength,
+                verbose,
+                ..
             } => match filter.as_str() {
-                "sketch" => image.filter_sketch(*strength),
-                "space" => image.filter_space(*strength),
-                "granite" => image.filter_granite(*strength),
+                "sketch" => image.filter_sketch(*strength, *verbose),
+                "space" => image.filter_space(*strength, *verbose),
+                "granite" => image.filter_granite(*strength, *verbose),
 
                 _ => {
                     eprintln!("Unknown filter: {}", filter);

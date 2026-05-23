@@ -1,0 +1,30 @@
+{
+	"source_dir": "source",
+	"output_dir": "out",
+
+	"jobs": [
+		{
+			"source": {
+				"type": "file",
+				"value": "0_chaos.ruh"
+			},
+			"steps": [
+				{
+					"type": "render",
+					"image_out_path": "0_chaos.png",
+					"render_translation": true,
+
+					"post_process_steps": [
+							{ "type": "scale", "factor": 2 },
+							{ "type": "filter", "name": "sketch" }
+					]
+				},
+
+				{
+					"type": "ipa",
+					"destination": "0_chaos.ipa.txt"
+				}
+			]
+		}
+	]
+}

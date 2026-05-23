@@ -1,8 +1,10 @@
-use std::ffi::CString;
+use std::{ffi::CString, sync::OnceLock};
 
 use bindings::PHONEME_CONFIGS;
 
 mod bindings;
+
+mod compat;
 
 //
 // Error type
@@ -35,48 +37,50 @@ const PHONINDEX: &[u8] = include_bytes!("../data/phonindex");
 const PHONTAB: &[u8] = include_bytes!("../data/phontab");
 
 fn initialize() -> EspeakResult<()> {
-    static IS_INITIALIZED: std::sync::Once = std::sync::Once::new();
-    if IS_INITIALIZED.is_completed() {
-        return Ok(());
-    }
-    IS_INITIALIZED.call_once(|| {});
+    // Keeps the configurations structure alive in memory globally
+    static INITIALIZE_CELL: OnceLock<EspeakResult<()>> = OnceLock::new();
 
-    let mut configs = PHONEME_CONFIGS {
-        intonations: INTONATIONS.as_ptr() as *mut i8,
-        intonation_len: INTONATIONS.len() as i32,
+    let res = INITIALIZE_CELL.get_or_init(|| {
+        let mut configs = PHONEME_CONFIGS {
+            intonations: INTONATIONS.as_ptr() as *mut i8,
+            intonation_len: INTONATIONS.len() as i32,
 
-        data: PHONDATA.as_ptr() as *mut i8,
-        data_len: PHONDATA.len() as i32,
+            data: PHONDATA.as_ptr() as *mut i8,
+            data_len: PHONDATA.len() as i32,
 
-        index: PHONINDEX.as_ptr() as *mut i8,
-        index_len: PHONINDEX.len() as i32,
+            index: PHONINDEX.as_ptr() as *mut i8,
+            index_len: PHONINDEX.len() as i32,
 
-        tab: PHONTAB.as_ptr() as *mut i8,
-        tab_len: PHONTAB.len() as i32,
-    };
+            tab: PHONTAB.as_ptr() as *mut i8,
+            tab_len: PHONTAB.len() as i32,
+        };
 
-    let result = unsafe {
-        bindings::espeak_Initialize(
-            bindings::espeak_AUDIO_OUTPUT_AUDIO_OUTPUT_RETRIEVAL,
-            0,
-            &mut configs,
-            (bindings::espeakINITIALIZE_DONT_EXIT | bindings::espeakINITIALIZE_PHONEME_IPA) as i32,
-        )
-    };
+        let result = unsafe {
+            bindings::espeak_Initialize(
+                bindings::espeak_AUDIO_OUTPUT_AUDIO_OUTPUT_RETRIEVAL,
+                0,
+                &mut configs,
+                (bindings::espeakINITIALIZE_DONT_EXIT | bindings::espeakINITIALIZE_PHONEME_IPA)
+                    as i32,
+            )
+        };
 
-    Error::from_raw(result)?;
+        Error::from_raw(result)?;
 
-    let result = unsafe {
-        bindings::espeak_SetVoiceByBuffer(
-            c"en-us".as_ptr(),
-            EN_US.as_ptr() as *mut i8,
-            EN_US.len() as i32,
-            EN_DICT.as_ptr() as *mut i8,
-            EN_DICT.len() as i32,
-        )
-    };
+        let result = unsafe {
+            bindings::espeak_SetVoiceByBuffer(
+                c"en-us".as_ptr(),
+                EN_US.as_ptr() as *mut i8,
+                EN_US.len() as i32,
+                EN_DICT.as_ptr() as *mut i8,
+                EN_DICT.len() as i32,
+            )
+        };
 
-    Error::from_raw(result)
+        Error::from_raw(result)
+    });
+
+    res.clone()
 }
 
 pub fn text_to_phonemes(text: &str) -> EspeakResult<String> {

@@ -1,5 +1,5 @@
 use clap::Subcommand;
-use libglyphtool::{
+use manager::core::{
     database::Database,
     error::EtroisResult,
     lexer::phonambulator::{validate_phonemes, SyllabicModel},

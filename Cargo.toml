@@ -4,5 +4,6 @@ members = [
     "core",
     "espeak",
     "cli",
-    "web"
+    "web",
+    "manager"
 ]
